@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Hooks 权限模型 - AI CLI 工具通识教学</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600&family=DM+Serif+Display&display=swap');
+
+  :root {
+    --bg: #060a12;
+    --bg-raised: #0b1120;
+    --bg-card: #0f1628;
+    --bg-card-alt: #0a0f1e;
+    --border: #192240;
+    --border-focus: #2a4080;
+    --blue: #4a9eff;
+    --cyan: #22d3ee;
+    --purple: #a78bfa;
+    --green: #34d399;
+    --orange: #fbbf24;
+    --red: #f87171;
+    --pink: #f472b6;
+    --teal: #2dd4bf;
+    --text: #dce4f0;
+    --text2: #8295b5;
+    --text3: #4a5f80;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    text-align: center;
+    padding: 80px 32px 56px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 40% at 30% 10%, rgba(74,158,255,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 70% 90%, rgba(167,139,250,0.04) 0%, transparent 70%);
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.2);
+    padding: 5px 16px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.8rem;
+    position: relative;
+    background: linear-gradient(135deg, #dce4f0 20%, #4a9eff 50%, #a78bfa 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 14px;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+    color: var(--text2);
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  /* ===== Container / Section ===== */
+  .container { max-width: 1340px; margin: 0 auto; padding: 48px 28px; }
+  .section { margin-bottom: 64px; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .sn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.2);
+    padding: 3px 10px;
+    border-radius: 5px;
+  }
+
+  .st { font-size: 1.5rem; font-weight: 700; }
+
+  .sd {
+    color: var(--text2);
+    font-size: 0.88rem;
+    margin-bottom: 26px;
+    max-width: 940px;
+    border-left: 3px solid var(--border);
+    padding-left: 16px;
+  }
+
+  /* ===== Card ===== */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    transition: border-color 0.3s;
+  }
+
+  .card:hover { border-color: var(--border-focus); }
+
+  .card-head {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-card-alt);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-head h3 { font-size: 1rem; font-weight: 600; }
+
+  .card-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: rgba(74,158,255,0.1);
+    color: var(--blue);
+    border: 1px solid rgba(74,158,255,0.2);
+  }
+
+  .card-badge.purple {
+    background: rgba(167,139,250,0.1);
+    color: var(--purple);
+    border: 1px solid rgba(167,139,250,0.2);
+  }
+
+  .card-badge.green {
+    background: rgba(52,211,153,0.1);
+    color: var(--green);
+    border: 1px solid rgba(52,211,153,0.2);
+  }
+
+  .card-badge.orange {
+    background: rgba(251,191,36,0.1);
+    color: var(--orange);
+    border: 1px solid rgba(251,191,36,0.2);
+  }
+
+  .card-badge.cyan {
+    background: rgba(34,211,238,0.1);
+    color: var(--cyan);
+    border: 1px solid rgba(34,211,238,0.2);
+  }
+
+  .card-badge.red {
+    background: rgba(248,113,113,0.1);
+    color: var(--red);
+    border: 1px solid rgba(248,113,113,0.2);
+  }
+
+  .card-body { padding: 24px; }
+
+  .card-note {
+    font-size: 0.8rem;
+    color: var(--text3);
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+
+  /* ===== Compare Table ===== */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+
+  .compare-table thead th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text2);
+    background: var(--bg-card-alt);
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .compare-table thead th:first-child {
+    border-radius: 8px 0 0 0;
+  }
+
+  .compare-table thead th:last-child {
+    border-radius: 0 8px 0 0;
+  }
+
+  .compare-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(25,34,64,0.5);
+    color: var(--text2);
+    vertical-align: top;
+  }
+
+  .compare-table tbody td:first-child {
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .compare-table tbody tr:hover td {
+    background: rgba(74,158,255,0.03);
+  }
+
+  .compare-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .compare-table .dim {
+    color: var(--text3);
+    font-style: italic;
+  }
+
+  .compare-table .highlight {
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  .compare-table .warn {
+    color: var(--orange);
+    font-weight: 500;
+  }
+
+  /* ===== Insight Box ===== */
+  .insight {
+    background: linear-gradient(135deg, rgba(74,158,255,0.05), rgba(167,139,250,0.05));
+    border: 1px solid rgba(74,158,255,0.18);
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin: 24px 0;
+  }
+
+  .insight h4 {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+
+  .insight p {
+    font-size: 0.84rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* ===== Op Grid ===== */
+  .op-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .op-card {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    transition: border-color 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .op-card:hover { border-color: var(--border-focus); }
+
+  .op-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+  }
+
+  .op-card.cat-blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
+  .op-card.cat-purple::before { background: linear-gradient(90deg, var(--purple), transparent); }
+  .op-card.cat-green::before { background: linear-gradient(90deg, var(--green), transparent); }
+  .op-card.cat-orange::before { background: linear-gradient(90deg, var(--orange), transparent); }
+  .op-card.cat-cyan::before { background: linear-gradient(90deg, var(--cyan), transparent); }
+  .op-card.cat-pink::before { background: linear-gradient(90deg, var(--pink), transparent); }
+
+  .op-card h4 {
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  .op-card p {
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .op-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .op-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(25,34,64,0.4);
+    font-size: 0.82rem;
+    color: var(--text2);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .op-list li:last-child { border-bottom: none; }
+
+  .op-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--cyan);
+    white-space: nowrap;
+    min-width: 120px;
+  }
+
+  .op-desc {
+    color: var(--text2);
+    flex: 1;
+  }
+
+  .freq-high {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--green);
+    background: rgba(52,211,153,0.08);
+    border: 1px solid rgba(52,211,153,0.15);
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+
+  .freq-mid {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--orange);
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.15);
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+
+  .freq-low {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text3);
+    background: rgba(74,95,128,0.08);
+    border: 1px solid rgba(74,95,128,0.15);
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+
+  /* ===== Spec Block (code / config display) ===== */
+  .spec-block {
+    background: #080c18;
+    border: 1px solid rgba(25,34,64,0.8);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .spec-block-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    background: rgba(15,22,40,0.8);
+    border-bottom: 1px solid rgba(25,34,64,0.6);
+  }
+
+  .spec-block-head span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+  }
+
+  .spec-block-head .spec-lang {
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.15);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  .spec-block pre {
+    padding: 18px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--text2);
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .spec-block pre .comment { color: var(--text3); }
+  .spec-block pre .key { color: var(--blue); }
+  .spec-block pre .str { color: var(--orange); }
+  .spec-block pre .num { color: var(--green); }
+  .spec-block pre .keyword { color: var(--purple); }
+  .spec-block pre .heading { color: var(--blue); font-weight: 600; }
+  .spec-block pre .value { color: var(--green); }
+  .spec-block pre .string { color: var(--orange); }
+
+  /* ===== Mermaid ===== */
+  .mermaid {
+    display: flex;
+    justify-content: center;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    padding: 24px 16px;
+    overflow-x: auto;
+    border: 1px solid rgba(25,34,64,0.6);
+  }
+
+  .mermaid svg { max-width: 100%; height: auto; }
+
+  /* ===== Bottom Nav ===== */
+  .bottom-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .bottom-nav-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bottom-nav-card:hover {
+    border-color: var(--border-focus);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(74,158,255,0.08);
+  }
+
+  .bottom-nav-card .nav-dir {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .bottom-nav-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .bottom-nav-card p {
+    font-size: 0.78rem;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  .bottom-nav-card.prev { text-align: left; }
+  .bottom-nav-card.next { text-align: right; }
+
+  /* ===== Footer ===== */
+  .footer {
+    text-align: center;
+    padding: 36px;
+    border-top: 1px solid var(--border);
+    color: var(--text3);
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .footer a {
+    color: var(--text3);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer a:hover { color: var(--blue); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .hero { padding: 56px 20px 40px; }
+    .container { padding: 32px 16px; }
+    .op-grid { grid-template-columns: 1fr; }
+    .bottom-nav { grid-template-columns: 1fr; }
+    .compare-table { font-size: 0.72rem; }
+    .compare-table thead th,
+    .compare-table tbody td { padding: 10px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== TOP NAV ========== -->
+<nav style="display:flex;justify-content:space-between;align-items:center;padding:12px 28px;border-bottom:1px solid #192240;background:#0b1120;font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
+  <a href="mcp-ecosystem.html" style="color:#8295b5;text-decoration:none;">&larr; 上一章</a>
+  <a href="index.html" style="color:#4a5f80;text-decoration:none;">05 / 07 &middot; 返回主页</a>
+  <a href="dev-standards.html" style="color:#8295b5;text-decoration:none;">下一章 &rarr;</a>
+</nav>
+
+<!-- ========== HERO ========== -->
+<div class="hero">
+  <div class="hero-tag">CHAPTER 05</div>
+  <h1>Agent &middot; Hooks &middot; 权限模型</h1>
+  <p>理解 AI Agent 的自主执行模式、生命周期钩子的定制能力、以及权限模型的安全边界。</p>
+</div>
+
+<div class="container">
+
+<!-- ========== SECTION 01: Agent 与 Subagent ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">01</span>
+    <span class="st">Agent 与 Subagent</span>
+  </div>
+  <p class="sd">Agent 是 AI CLI 工具的核心运行模式。主 Agent 负责任务分析和协调，Sub Agent 承担具体子任务的并行执行。</p>
+
+  <!-- Card 1: Agent 工作模式 -->
+  <div class="card">
+    <div class="card-head">
+      <h3>Agent 工作模式</h3>
+      <span class="card-badge cyan">WORKFLOW</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">主 Agent 接收用户任务后，将其拆解并委派给多个 Sub Agent 并行执行</p>
+      <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1e3a5f', 'primaryTextColor': '#e2e8f0', 'primaryBorderColor': '#4a9eff', 'lineColor': '#4a5f80', 'fontSize': '13px'}}}%%
+sequenceDiagram
+    participant U as 用户
+    participant M as 主 Agent
+    participant S1 as Sub Agent 1
+    participant S2 as Sub Agent 2
+
+    U->>M: 分配任务
+    M->>M: 分析与规划
+    M->>S1: 委派子任务 A
+    M->>S2: 委派子任务 B
+    S1-->>M: 完成报告
+    S2-->>M: 完成报告
+    M->>M: 综合结果
+    M-->>U: 交付成果
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: Agent 类型对比 -->
+  <div class="card">
+    <div class="card-head">
+      <h3>Agent 类型对比</h3>
+      <span class="card-badge">COMPARISON</span>
+    </div>
+    <div class="card-body" style="overflow-x:auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>维度</th>
+            <th>Claude Code</th>
+            <th>OpenCode</th>
+            <th>Cursor</th>
+            <th>GLM Plan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>主 Agent</td>
+            <td class="highlight">原生，完整工具链</td>
+            <td class="highlight">原生，多模型</td>
+            <td>IDE 内置</td>
+            <td class="dim">基础</td>
+          </tr>
+          <tr>
+            <td>Sub Agent</td>
+            <td class="highlight">Task 工具委派</td>
+            <td class="highlight">原生子 Agent</td>
+            <td>Background Agent</td>
+            <td class="dim">不支持</td>
+          </tr>
+          <tr>
+            <td>并行执行</td>
+            <td class="highlight">支持多子 Agent 并行</td>
+            <td>支持</td>
+            <td>支持</td>
+            <td class="dim">不支持</td>
+          </tr>
+          <tr>
+            <td>工具访问</td>
+            <td>文件/命令/搜索/编辑</td>
+            <td>文件/命令/搜索/编辑</td>
+            <td>IDE 内工具</td>
+            <td class="dim">有限</td>
+          </tr>
+          <tr>
+            <td>自主程度</td>
+            <td class="highlight">可配置 (3 级)</td>
+            <td>可配置</td>
+            <td>可配置</td>
+            <td class="dim">基础</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 02: Hooks 生命周期 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">02</span>
+    <span class="st">Hooks 生命周期</span>
+  </div>
+  <p class="sd">Hooks 允许你在 Agent 执行的关键节点注入自定义逻辑，实现安全审查、自动格式化、上下文注入等高级定制。</p>
+
+  <!-- Card: Hook 生命周期流程 -->
+  <div class="card">
+    <div class="card-head">
+      <h3>Hook 生命周期流程</h3>
+      <span class="card-badge purple">LIFECYCLE</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">Hooks 在工具执行前后以及会话关键节点被触发</p>
+      <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1e3a5f', 'primaryTextColor': '#e2e8f0', 'primaryBorderColor': '#4a9eff', 'lineColor': '#4a5f80', 'fontSize': '13px'}}}%%
+flowchart TD
+    A["用户发送消息"] --> B{"PreTool Hook"}
+    B -->|通过| C["工具执行"]
+    B -->|拦截| D["Hook 自定义逻辑"]
+    D --> C
+    C --> E{"PostTool Hook"}
+    E --> F["结果返回"]
+
+    G["会话开始"] --> H["SessionStart Hook"]
+    I["消息提交"] --> J["PromptSubmit Hook"]
+
+    style A fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+    style B fill:#1a1040,stroke:#a78bfa,stroke-width:2px
+    style C fill:#0f1628,stroke:#22d3ee,stroke-width:2px
+    style D fill:#2a1a1a,stroke:#f87171,stroke-width:1px
+    style E fill:#1a1040,stroke:#a78bfa,stroke-width:2px
+    style F fill:#081f18,stroke:#34d399,stroke-width:2px
+    style G fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+    style H fill:#081f18,stroke:#34d399,stroke-width:1px
+    style I fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+    style J fill:#081f18,stroke:#34d399,stroke-width:1px
+      </div>
+    </div>
+  </div>
+
+  <!-- Card: Hooks 类型一览 -->
+  <div class="card">
+    <div class="card-head">
+      <h3>Hooks 类型一览</h3>
+      <span class="card-badge cyan">CATALOG</span>
+    </div>
+    <div class="card-body">
+      <div class="op-grid">
+        <!-- 触发时机类 -->
+        <div class="op-card cat-blue">
+          <h4>触发时机类</h4>
+          <ul class="op-list">
+            <li>
+              <span class="op-name">SessionStart</span>
+              <span class="op-desc">会话启动时触发<span class="freq-high">&#9733;&#9733;&#9733;</span></span>
+            </li>
+            <li>
+              <span class="op-name">PromptSubmit</span>
+              <span class="op-desc">用户提交消息前触发<span class="freq-high">&#9733;&#9733;&#9733;</span></span>
+            </li>
+            <li>
+              <span class="op-name">PreToolUse</span>
+              <span class="op-desc">工具调用前触发<span class="freq-mid">&#9733;&#9733;</span></span>
+            </li>
+            <li>
+              <span class="op-name">PostToolUse</span>
+              <span class="op-desc">工具调用后触发<span class="freq-mid">&#9733;&#9733;</span></span>
+            </li>
+            <li>
+              <span class="op-name">Stop</span>
+              <span class="op-desc">Agent 停止时触发<span class="freq-low">&#9733;</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- 实用场景 -->
+        <div class="op-card cat-purple">
+          <h4>实用场景</h4>
+          <ul class="op-list">
+            <li>
+              <span class="op-name">自动加载上下文</span>
+              <span class="op-desc">SessionStart 时注入项目信息<span class="freq-high">&#9733;&#9733;&#9733;</span></span>
+            </li>
+            <li>
+              <span class="op-name">安全审查</span>
+              <span class="op-desc">PreToolUse 拦截危险命令<span class="freq-high">&#9733;&#9733;&#9733;</span></span>
+            </li>
+            <li>
+              <span class="op-name">自动格式化</span>
+              <span class="op-desc">PostToolUse 后执行 lint<span class="freq-mid">&#9733;&#9733;</span></span>
+            </li>
+            <li>
+              <span class="op-name">日志记录</span>
+              <span class="op-desc">记录所有工具调用和结果<span class="freq-mid">&#9733;&#9733;</span></span>
+            </li>
+            <li>
+              <span class="op-name">自定义通知</span>
+              <span class="op-desc">Stop 时发送完成通知<span class="freq-low">&#9733;</span></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spec-block: Hook 配置示例 -->
+  <div class="card">
+    <div class="card-head">
+      <h3>Hook 配置示例</h3>
+      <span class="card-badge green">CONFIG</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">在 .claude/settings.json 中定义 hooks，指定触发时机和执行命令</p>
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>.claude/settings.json</span>
+          <span class="spec-lang">JSON</span>
+        </div>
+        <pre><span class="comment">// .claude/settings.json</span>
+{
+  <span class="key">"hooks"</span>: {
+    <span class="key">"SessionStart"</span>: [{
+      <span class="key">"type"</span>: <span class="str">"command"</span>,
+      <span class="key">"command"</span>: <span class="str">"cat project-context.md"</span>
+    }],
+    <span class="key">"PreToolUse"</span>: [{
+      <span class="key">"type"</span>: <span class="str">"command"</span>,
+      <span class="key">"command"</span>: <span class="str">"echo 'Tool: $TOOL_NAME'"</span>,
+      <span class="key">"matcher"</span>: { <span class="key">"tool_name"</span>: <span class="str">"Bash"</span> }
+    }]
+  }
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 03: 权限模型 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">03</span>
+    <span class="st">权限模型</span>
+  </div>
+  <p class="sd">权限模型决定了 AI Agent 在执行操作时的自主程度。合理的权限配置是安全使用 AI CLI 工具的关键。</p>
+
+  <!-- Card: 三级权限模式 -->
+  <div class="card">
+    <div class="card-head">
+      <h3>三级权限模式</h3>
+      <span class="card-badge red">SECURITY</span>
+    </div>
+    <div class="card-body" style="overflow-x:auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>模式</th>
+            <th>行为</th>
+            <th>适用场景</th>
+            <th>安全等级</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ask (默认)</td>
+            <td>每次操作前请求确认</td>
+            <td>敏感项目、初次使用</td>
+            <td class="highlight">最高</td>
+          </tr>
+          <tr>
+            <td>Auto-Approve</td>
+            <td>自动批准匹配规则的操作</td>
+            <td>熟悉的重复操作</td>
+            <td class="warn">中等</td>
+          </tr>
+          <tr>
+            <td>YOLO / Trust</td>
+            <td>全自动执行，无需确认</td>
+            <td>沙箱环境、测试项目</td>
+            <td class="dim">最低</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Insight: 安全第一原则 -->
+  <div class="insight">
+    <h4>安全第一原则</h4>
+    <p>权限模型是 AI CLI 工具安全的最后一道防线。建议：1) 生产环境始终使用 Ask 模式；2) 通过 allowlist 精确控制自动批准的操作范围；3) 使用 Hooks 在 PreToolUse 中添加安全审查逻辑；4) 永远不要在包含凭证的目录中使用全自动模式。</p>
+  </div>
+</div>
+
+<!-- ========== BOTTOM NAV ========== -->
+<div class="bottom-nav">
+  <a href="mcp-ecosystem.html" class="bottom-nav-card prev">
+    <div class="nav-dir">&larr; 上一章</div>
+    <h4>04 &middot; MCP 生态</h4>
+    <p>MCP 协议、工具生态与集成方式</p>
+  </a>
+  <a href="dev-standards.html" class="bottom-nav-card next">
+    <div class="nav-dir">下一章 &rarr;</div>
+    <h4>06 &middot; 开发规范</h4>
+    <p>团队协作中的 AI 辅助开发最佳实践</p>
+  </a>
+</div>
+
+</div>
+
+<!-- ========== FOOTER ========== -->
+<div class="footer">
+  AI CLI TOOLS TUTORIAL &middot; 2026 &middot; <a href="index.html">返回主页</a>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    securityLevel: 'loose',
+    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+    sequence: { useMaxWidth: true, actorMargin: 80, messageMargin: 40 }
+  });
+</script>
+</body>
+</html>

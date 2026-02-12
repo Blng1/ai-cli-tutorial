@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>06 Vibe Coding 主流规范 - AI CLI 工具通识教学</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600&family=DM+Serif+Display&display=swap');
+
+  :root {
+    --bg: #060a12;
+    --bg-raised: #0b1120;
+    --bg-card: #0f1628;
+    --bg-card-alt: #0a0f1e;
+    --border: #192240;
+    --border-focus: #2a4080;
+    --blue: #4a9eff;
+    --cyan: #22d3ee;
+    --purple: #a78bfa;
+    --green: #34d399;
+    --orange: #fbbf24;
+    --red: #f87171;
+    --pink: #f472b6;
+    --teal: #2dd4bf;
+    --text: #dce4f0;
+    --text2: #8295b5;
+    --text3: #4a5f80;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    text-align: center;
+    padding: 80px 32px 56px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 40% at 30% 10%, rgba(74,158,255,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 70% 90%, rgba(167,139,250,0.04) 0%, transparent 70%);
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.2);
+    padding: 5px 16px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.8rem;
+    position: relative;
+    background: linear-gradient(135deg, #dce4f0 20%, #4a9eff 50%, #a78bfa 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 14px;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+    color: var(--text2);
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  /* ===== Container / Section ===== */
+  .container { max-width: 1340px; margin: 0 auto; padding: 48px 28px; }
+  .section { margin-bottom: 64px; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .sn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.2);
+    padding: 3px 10px;
+    border-radius: 5px;
+  }
+
+  .st { font-size: 1.5rem; font-weight: 700; }
+
+  .sd {
+    color: var(--text2);
+    font-size: 0.88rem;
+    margin-bottom: 26px;
+    max-width: 940px;
+    border-left: 3px solid var(--border);
+    padding-left: 16px;
+  }
+
+  /* ===== Card ===== */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    transition: border-color 0.3s;
+  }
+
+  .card:hover { border-color: var(--border-focus); }
+
+  .card-head {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-card-alt);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-head h3 { font-size: 1rem; font-weight: 600; }
+
+  .card-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: rgba(74,158,255,0.1);
+    color: var(--blue);
+    border: 1px solid rgba(74,158,255,0.2);
+  }
+
+  .card-badge.purple {
+    background: rgba(167,139,250,0.1);
+    color: var(--purple);
+    border: 1px solid rgba(167,139,250,0.2);
+  }
+
+  .card-badge.green {
+    background: rgba(52,211,153,0.1);
+    color: var(--green);
+    border: 1px solid rgba(52,211,153,0.2);
+  }
+
+  .card-badge.orange {
+    background: rgba(251,191,36,0.1);
+    color: var(--orange);
+    border: 1px solid rgba(251,191,36,0.2);
+  }
+
+  .card-badge.cyan {
+    background: rgba(34,211,238,0.1);
+    color: var(--cyan);
+    border: 1px solid rgba(34,211,238,0.2);
+  }
+
+  .card-badge.pink {
+    background: rgba(244,114,182,0.1);
+    color: var(--pink);
+    border: 1px solid rgba(244,114,182,0.2);
+  }
+
+  .card-badge.red {
+    background: rgba(248,113,113,0.1);
+    color: var(--red);
+    border: 1px solid rgba(248,113,113,0.2);
+  }
+
+  .card-body { padding: 24px; }
+
+  .card-note {
+    font-size: 0.8rem;
+    color: var(--text3);
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+
+  /* ===== Compare Table ===== */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+
+  .compare-table thead th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text2);
+    background: var(--bg-card-alt);
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .compare-table thead th:first-child {
+    border-radius: 8px 0 0 0;
+  }
+
+  .compare-table thead th:last-child {
+    border-radius: 0 8px 0 0;
+  }
+
+  .compare-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(25,34,64,0.5);
+    color: var(--text2);
+    vertical-align: top;
+  }
+
+  .compare-table tbody td:first-child {
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .compare-table tbody tr:hover td {
+    background: rgba(74,158,255,0.03);
+  }
+
+  .compare-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .compare-table .dim {
+    color: var(--text3);
+    font-weight: 400;
+  }
+
+  .compare-table .highlight {
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  .compare-table .warn {
+    color: var(--orange);
+    font-weight: 500;
+  }
+
+  /* ===== Insight Box ===== */
+  .insight {
+    background: linear-gradient(135deg, rgba(74,158,255,0.05), rgba(167,139,250,0.05));
+    border: 1px solid rgba(74,158,255,0.18);
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin: 24px 0;
+  }
+
+  .insight h4 {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+
+  .insight p {
+    font-size: 0.84rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* ===== Op Grid (best practices grid) ===== */
+  .op-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .op-card {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    transition: border-color 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .op-card:hover { border-color: var(--border-focus); }
+
+  .op-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .op-card.cat-blue::before { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+  .op-card.cat-purple::before { background: linear-gradient(90deg, var(--purple), var(--pink)); }
+  .op-card.cat-green::before { background: linear-gradient(90deg, var(--green), var(--teal)); }
+  .op-card.cat-orange::before { background: linear-gradient(90deg, var(--orange), var(--red)); }
+  .op-card.cat-cyan::before { background: linear-gradient(90deg, var(--cyan), var(--blue)); }
+  .op-card.cat-pink::before { background: linear-gradient(90deg, var(--pink), var(--purple)); }
+
+  .op-card h4 {
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  .op-card p {
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ===== Op List ===== */
+  .op-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .op-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(25,34,64,0.4);
+    font-size: 0.84rem;
+    color: var(--text2);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .op-list li:last-child { border-bottom: none; }
+
+  .op-name {
+    font-weight: 600;
+    color: var(--text);
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+
+  .op-desc {
+    flex: 1;
+    color: var(--text2);
+    font-size: 0.82rem;
+  }
+
+  .freq-high {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--green);
+    background: rgba(52,211,153,0.08);
+    border: 1px solid rgba(52,211,153,0.15);
+    padding: 2px 7px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .freq-mid {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--orange);
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.15);
+    padding: 2px 7px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .freq-low {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    background: rgba(74,95,128,0.08);
+    border: 1px solid rgba(74,95,128,0.15);
+    padding: 2px 7px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* ===== Spec Block (code / config display) ===== */
+  .spec-block {
+    background: #080c18;
+    border: 1px solid rgba(25,34,64,0.8);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .spec-block-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    background: rgba(15,22,40,0.8);
+    border-bottom: 1px solid rgba(25,34,64,0.6);
+  }
+
+  .spec-block-head span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+  }
+
+  .spec-block-head .spec-lang {
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.15);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  .spec-block pre {
+    padding: 18px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--text2);
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .spec-block pre .key { color: var(--purple); font-weight: 500; }
+  .spec-block pre .str { color: var(--orange); }
+  .spec-block pre .num { color: var(--cyan); }
+  .spec-block pre .comment { color: var(--text3); }
+  .spec-block pre .keyword { color: var(--purple); }
+  .spec-block pre .heading { color: var(--blue); font-weight: 600; }
+  .spec-block pre .value { color: var(--green); }
+  .spec-block pre .string { color: var(--orange); }
+  .spec-block pre .type { color: var(--cyan); }
+
+  /* ===== Mermaid ===== */
+  .mermaid {
+    display: flex;
+    justify-content: center;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    padding: 24px 16px;
+    overflow-x: auto;
+    border: 1px solid rgba(25,34,64,0.6);
+  }
+
+  .mermaid svg { max-width: 100%; height: auto; }
+
+  /* ===== Spec Grid (side by side code blocks) ===== */
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 16px;
+  }
+
+  .spec-grid .spec-block {
+    margin: 0;
+  }
+
+  /* ===== Bottom Nav ===== */
+  .bottom-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .bottom-nav-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bottom-nav-card:hover {
+    border-color: var(--border-focus);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(74,158,255,0.08);
+  }
+
+  .bottom-nav-card .nav-dir {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .bottom-nav-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .bottom-nav-card p {
+    font-size: 0.78rem;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  .bottom-nav-card.prev { text-align: left; }
+  .bottom-nav-card.next { text-align: right; }
+
+  /* ===== Footer ===== */
+  .footer {
+    text-align: center;
+    padding: 36px;
+    border-top: 1px solid var(--border);
+    color: var(--text3);
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .footer a {
+    color: var(--text3);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer a:hover { color: var(--blue); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .hero { padding: 56px 20px 40px; }
+    .container { padding: 32px 16px; }
+    .op-grid { grid-template-columns: 1fr; }
+    .spec-grid { grid-template-columns: 1fr; }
+    .bottom-nav { grid-template-columns: 1fr; }
+    .compare-table { font-size: 0.72rem; }
+    .compare-table thead th,
+    .compare-table tbody td { padding: 10px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== TOP NAV ========== -->
+<nav style="display:flex;justify-content:space-between;align-items:center;padding:12px 28px;border-bottom:1px solid #192240;background:#0b1120;font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
+  <a href="agent-hooks.html" style="color:#8295b5;text-decoration:none;">&larr; 上一章</a>
+  <a href="index.html" style="color:#4a5f80;text-decoration:none;">06 / 07 &middot; 返回主页</a>
+  <a href="advanced-practice.html" style="color:#8295b5;text-decoration:none;">下一章 &rarr;</a>
+</nav>
+
+<!-- ========== HERO ========== -->
+<div class="hero">
+  <div class="hero-tag">CHAPTER 06</div>
+  <h1>Vibe Coding 主流规范</h1>
+  <p>Speckit 结构化需求驱动 &middot; Schema-Driven 数据契约先行 &middot; TDD 测试控制混沌 &mdash; 三大方法论守住 Vibe Coding 的质量底线。</p>
+</div>
+
+<div class="container">
+
+<!-- ========== SECTION 01: 方法论总览 — 为什么 Vibe Coding 需要规范 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">01</span>
+    <span class="st">方法论总览 &mdash; 为什么 Vibe Coding 需要规范</span>
+  </div>
+  <p class="sd">Vibe Coding 的核心矛盾：AI 生成速度极快但方向不确定。没有控制点，速度越快偏离越远。三大方法论分别在需求、设计、实现三个阶段设置控制点。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Vibe Coding 核心矛盾</h3>
+      <span class="card-badge cyan">INSIGHT</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">AI 不缺生产力，缺的是方向感 — 规范就是给 AI 装上导航系统</p>
+      <div class="op-grid">
+        <div class="op-card cat-blue">
+          <h4>AI 的优势：速度</h4>
+          <p>几秒内生成完整模块、数百行代码、多种方案。人类开发者一天的工作量，AI 可能几分钟完成。但速度不等于正确。</p>
+        </div>
+        <div class="op-card cat-orange">
+          <h4>AI 的弱点：方向</h4>
+          <p>AI 不理解业务上下文、不知道团队约定、无法判断需求边界。没有明确指令，它会猜测并自信地走错方向。速度越快，返工成本越高。</p>
+        </div>
+        <div class="op-card cat-green">
+          <h4>解法：三个控制点</h4>
+          <p>在需求入口（Speckit）、设计阶段（Schema）、实现阶段（TDD）各设一个控制点。让 AI 在正确的轨道上全速奔跑，而不是在错误方向上越跑越远。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>三大方法论在开发生命周期中的定位</h3>
+      <span class="card-badge">OVERVIEW</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">每个方法论守护一个阶段，三者串联覆盖从需求到交付的完整链路</p>
+      <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1e3a5f', 'primaryTextColor': '#e2e8f0', 'primaryBorderColor': '#4a9eff', 'lineColor': '#4a5f80', 'fontSize': '13px'}}}%%
+flowchart LR
+    A["需求"] --> B["Speckit<br/>结构化需求入口"]
+    B --> C["Schema-Driven<br/>数据契约设计"]
+    C --> D["TDD<br/>测试驱动实现"]
+    D --> E["交付"]
+
+    style A fill:#0f1628,stroke:#4a5f80,stroke-width:1px
+    style B fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+    style C fill:#1a1040,stroke:#a78bfa,stroke-width:2px
+    style D fill:#0f2818,stroke:#34d399,stroke-width:2px
+    style E fill:#0f1628,stroke:#4a5f80,stroke-width:1px
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>三大方法论对照表</h3>
+      <span class="card-badge cyan">COMPARE</span>
+    </div>
+    <div class="card-body" style="overflow-x:auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>维度</th>
+            <th>Speckit (SDD)</th>
+            <th>Schema-Driven</th>
+            <th>TDD</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>核心理念</td>
+            <td class="highlight">结构化需求驱动开发</td>
+            <td class="highlight">数据契约先行</td>
+            <td class="highlight">测试先于实现</td>
+          </tr>
+          <tr>
+            <td>解决问题</td>
+            <td>需求模糊导致 AI 猜测</td>
+            <td>接口不一致导致集成失败</td>
+            <td>实现偏离需求、回归缺陷</td>
+          </tr>
+          <tr>
+            <td>控制阶段</td>
+            <td class="warn">需求入口</td>
+            <td class="warn">设计阶段</td>
+            <td class="warn">实现阶段</td>
+          </tr>
+          <tr>
+            <td>关键产物</td>
+            <td>constitution.md + spec 文件 + plan</td>
+            <td>TypeScript interface + Zod + OpenAPI</td>
+            <td>测试用例 + 最小实现 + 重构代码</td>
+          </tr>
+          <tr>
+            <td>适用场景</td>
+            <td>新功能、跨模块需求</td>
+            <td>API 设计、数据模型、前后端对接</td>
+            <td>核心逻辑、边界复杂的功能</td>
+          </tr>
+          <tr>
+            <td>工具支持</td>
+            <td>speckit-specify Command</td>
+            <td>schema-gen Command</td>
+            <td>tdd-runner Agent</td>
+          </tr>
+          <tr>
+            <td>可组合性</td>
+            <td class="dim">输出 spec 供 Schema 消费</td>
+            <td class="dim">输出类型供 TDD 使用</td>
+            <td class="dim">验证 Schema 定义的契约</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="insight">
+    <h4>三者不互斥，而是串联</h4>
+    <p>Speckit 定义"做什么" &rarr; Schema 锁定"数据长什么样" &rarr; TDD 验证"实现是否正确"。三个方法论在不同阶段设置控制点，串联起来就是 Vibe Coding 的质量防线。可以只用其中一个起步，但组合使用效果最佳。</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 02: Speckit (SDD) — 结构化需求驱动开发 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">02</span>
+    <span class="st">Speckit (SDD) &mdash; 结构化需求驱动开发</span>
+  </div>
+  <p class="sd">Speckit 的核心思想：先用结构化文档锁定需求边界，再让 AI 生成代码。五步流程：Constitution &rarr; Specify &rarr; Plan &rarr; Tasks &rarr; Implement。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Speckit 五步流程</h3>
+      <span class="card-badge">WORKFLOW</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">每一步输出都是下一步的输入，形成需求到实现的完整链路</p>
+      <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1e3a5f', 'primaryTextColor': '#e2e8f0', 'primaryBorderColor': '#4a9eff', 'lineColor': '#4a5f80', 'fontSize': '13px'}}}%%
+flowchart LR
+    S1["1. Constitution<br/>项目宪法"] --> S2["2. Specify<br/>需求结构化"]
+    S2 --> S3["3. Plan<br/>技术方案"]
+    S3 --> S4["4. Tasks<br/>任务拆解"]
+    S4 --> S5["5. Implement<br/>代码实现"]
+
+    style S1 fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+    style S2 fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+    style S3 fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+    style S4 fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+    style S5 fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Step 1: Constitution 项目宪法</h3>
+      <span class="card-badge">STEP 1</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">Constitution 是项目级不变量，所有 spec 和实现都必须遵守的基本约束</p>
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>constitution.md</span>
+          <span class="spec-lang">MARKDOWN</span>
+        </div>
+        <pre><span class="heading"># Project Constitution</span>
+
+<span class="heading">## Tech Stack</span>
+<span class="comment">- Runtime: Node.js 20 + TypeScript 5.4 (strict mode)</span>
+<span class="comment">- Framework: Next.js 14 App Router</span>
+<span class="comment">- Database: PostgreSQL 16 + Prisma ORM</span>
+<span class="comment">- Testing: Vitest + Testing Library</span>
+<span class="comment">- Validation: Zod for all runtime checks</span>
+
+<span class="heading">## Architecture Decisions</span>
+<span class="comment">- 分层架构：routes → services → repositories</span>
+<span class="comment">- 禁止跨层调用（routes 不能直接调 repositories）</span>
+<span class="comment">- 所有外部依赖通过接口注入，便于测试</span>
+
+<span class="heading">## Naming Conventions</span>
+<span class="comment">- 文件：kebab-case（user-login.ts）</span>
+<span class="comment">- 类型：PascalCase（UserLoginRequest）</span>
+<span class="comment">- 函数：camelCase（validateLogin）</span>
+<span class="comment">- 常量：SCREAMING_SNAKE（MAX_RETRY_COUNT）</span>
+
+<span class="heading">## Security Baseline</span>
+<span class="comment">- 所有用户输入必须 Zod 校验</span>
+<span class="comment">- 密码 bcrypt cost >= 12</span>
+<span class="comment">- JWT 过期 <= 24h</span>
+<span class="comment">- 敏感操作必须审计日志</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Step 2-4: Specify + Plan + Tasks</h3>
+      <span class="card-badge">STEP 2-4</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">Specify 结构化需求，Plan 分解技术方案，Tasks 拆解为可执行单元</p>
+      <div class="spec-grid">
+        <div class="spec-block">
+          <div class="spec-block-head">
+            <span>specs/user-login.spec.md</span>
+            <span class="spec-lang">SPEC</span>
+          </div>
+          <pre><span class="heading"># Feature: User Login</span>
+
+<span class="heading">## 需求描述</span>
+<span class="comment">用户通过邮箱+密码登录，验证成功</span>
+<span class="comment">后返回 JWT token。</span>
+
+<span class="heading">## 验收标准</span>
+<span class="comment">- [ ] 邮箱格式校验（RFC 5322）</span>
+<span class="comment">- [ ] 密码错误返回 401 + 通用错误消息</span>
+<span class="comment">- [ ] 成功返回 {token, expiresIn}</span>
+<span class="comment">- [ ] 连续 5 次失败锁定 15 分钟</span>
+
+<span class="heading">## 失败策略</span>
+<span class="comment">| 场景     | 对外行为    | 内部处理       |</span>
+<span class="comment">|---------|-----------|--------------|</span>
+<span class="comment">| 用户不存在 | 401 通用错误 | 记录审计日志     |</span>
+<span class="comment">| 密码错误   | 401 通用错误 | 递增失败计数     |</span>
+<span class="comment">| 账户锁定   | 403 锁定提示 | 记录锁定时间戳   |</span>
+
+<span class="heading">## 技术约束</span>
+<span class="comment">- 遵循 constitution.md 安全基线</span>
+<span class="comment">- 密码比对使用 bcrypt.compare</span></pre>
+        </div>
+        <div class="spec-block">
+          <div class="spec-block-head">
+            <span>Plan + Tasks 输出示例</span>
+            <span class="spec-lang">OUTPUT</span>
+          </div>
+          <pre><span class="heading"># Plan: User Login</span>
+
+<span class="heading">## 技术方案</span>
+<span class="value">1.</span> 路由层：POST /api/auth/login
+<span class="value">2.</span> 服务层：AuthService.login()
+<span class="value">3.</span> 数据层：UserRepository.findByEmail()
+<span class="value">4.</span> 校验层：Zod schema 校验请求体
+
+<span class="heading">## Tasks</span>
+<span class="comment">- [ ] T1: 定义 LoginRequest/Response schema</span>
+<span class="comment">- [ ] T2: 实现 UserRepository.findByEmail</span>
+<span class="comment">- [ ] T3: 实现 AuthService.login 核心逻辑</span>
+<span class="comment">- [ ] T4: 实现登录失败计数 + 锁定</span>
+<span class="comment">- [ ] T5: 路由注册 + 集成测试</span>
+<span class="comment">- [ ] T6: 审计日志集成</span>
+
+<span class="heading">## 依赖关系</span>
+<span class="comment">T1 → T2 → T3 → T4 → T5 → T6</span>
+<span class="comment">（T1 schema 定义完才能写实现）</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Claude Code 落地配置</h3>
+      <span class="card-badge cyan">CONFIG</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">CLAUDE.md 规则 + speckit-specify Command，让 AI 自动按 Speckit 流程工作</p>
+      <div class="spec-grid">
+        <div class="spec-block">
+          <div class="spec-block-head">
+            <span>CLAUDE.md (Speckit 规则)</span>
+            <span class="spec-lang">MARKDOWN</span>
+          </div>
+          <pre><span class="heading">## Spec 规范</span>
+<span class="comment">- 新功能必须先生成 spec 文件再写代码</span>
+<span class="comment">- 每条验收标准必须可映射到具体测试用例</span>
+<span class="comment">- 禁止模糊用词："适当的""合理的""必要时"</span>
+<span class="comment">- 失败策略必须分离"对外行为"与"内部处理"</span>
+<span class="comment">- 所有 spec 文件存放在 specs/ 目录</span>
+<span class="comment">- 实现前必须检查 constitution.md 约束</span></pre>
+        </div>
+        <div class="spec-block">
+          <div class="spec-block-head">
+            <span>.claude/commands/speckit-specify.md</span>
+            <span class="spec-lang">COMMAND</span>
+          </div>
+          <pre><span class="heading"># Speckit Specify</span>
+
+根据 <span class="value">$ARGUMENTS</span> 描述的需求，
+按 Speckit 流程生成结构化 Spec。
+
+<span class="heading">## 执行步骤</span>
+
+<span class="num">1.</span> 读取 <span class="value">constitution.md</span> 获取项目约束
+<span class="num">2.</span> 读取已有 <span class="value">specs/</span> 了解上下文与规范
+<span class="num">3.</span> 与用户确认需求范围和边界
+<span class="num">4.</span> 生成 spec 到 <span class="value">specs/{feature}.spec.md</span>
+<span class="num">5.</span> 生成 plan + tasks 到 spec 文件末尾
+
+<span class="heading">## 约束规则</span>
+
+<span class="value">1.</span> 必须引用 constitution.md 中的约束
+<span class="value">2.</span> 每条验收标准限一句话
+<span class="value">3.</span> 失败策略分离对外/对内
+<span class="value">4.</span> 安全需求引用 OWASP / NIST
+<span class="value">5.</span> Tasks 必须标注依赖关系</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <h4>Spec 就是给 AI 的精确 Prompt</h4>
+    <p>与其反复修正 AI 的理解偏差，不如一次性用 Speckit 把需求写清楚。Constitution 确保项目级约束不被遗忘，Spec 确保功能级需求无歧义，Plan + Tasks 确保实现路径可追踪。Spec 文件就是最高质量的 AI Prompt。</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 03: Schema-Driven Development — 数据契约先行 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">03</span>
+    <span class="st">Schema-Driven Development &mdash; 数据契约先行</span>
+  </div>
+  <p class="sd">先定义数据契约，再写业务逻辑。三层校验体系：TypeScript Interface（编译期）+ Zod Validator（运行时）+ OpenAPI（跨团队），用类型系统消除 AI 的理解偏差。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>三层校验体系</h3>
+      <span class="card-badge purple">TRIPLE-LAYER</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">三层各司其职：编译期捕获类型错误、运行时拦截非法数据、跨团队同步契约</p>
+      <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1a1040', 'primaryTextColor': '#e2e8f0', 'primaryBorderColor': '#a78bfa', 'lineColor': '#4a5f80', 'fontSize': '13px'}}}%%
+flowchart TD
+    S["Spec 需求"] --> T["TypeScript Interface<br/>编译期校验"]
+    S --> Z["Zod Validator<br/>运行时校验"]
+    S --> O["OpenAPI 3.1<br/>跨团队契约"]
+    T --> CODE["业务代码"]
+    Z --> CODE
+    O --> DOC["API 文档 / 前端联调"]
+
+    style S fill:#0f1628,stroke:#4a5f80,stroke-width:1px
+    style T fill:#1a1040,stroke:#a78bfa,stroke-width:2px
+    style Z fill:#1a1040,stroke:#a78bfa,stroke-width:2px
+    style O fill:#1a1040,stroke:#a78bfa,stroke-width:2px
+    style CODE fill:#0f2818,stroke:#34d399,stroke-width:1px
+    style DOC fill:#0f2818,stroke:#34d399,stroke-width:1px
+      </div>
+      <div class="op-grid" style="margin-top: 18px;">
+        <div class="op-card cat-purple">
+          <h4>TypeScript Interface</h4>
+          <p>编译期类型检查。IDE 自动补全、重构安全。错误在写代码时就被发现，不用等到运行。</p>
+        </div>
+        <div class="op-card cat-purple">
+          <h4>Zod Validator</h4>
+          <p>运行时数据校验。用户输入、API 响应、外部数据 — 所有不可信数据在边界处被 Zod 拦截。</p>
+        </div>
+        <div class="op-card cat-purple">
+          <h4>OpenAPI 3.1</h4>
+          <p>跨团队数据契约。前后端、微服务之间的接口协议。一次定义，多处消费，自动生成文档。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>三层代码对比 — UserLogin 示例</h3>
+      <span class="card-badge purple">CODE</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">同一个数据结构在三层中的不同表达，字段必须 1:1 对应</p>
+      <div class="spec-grid">
+        <div class="spec-block">
+          <div class="spec-block-head">
+            <span>types/user-login.ts</span>
+            <span class="spec-lang">TypeScript</span>
+          </div>
+          <pre><span class="keyword">export interface</span> <span class="type">LoginRequest</span> {
+  <span class="key">email</span>: <span class="type">string</span>;    <span class="comment">// RFC 5322</span>
+  <span class="key">password</span>: <span class="type">string</span>; <span class="comment">// 8-128 chars</span>
+}
+
+<span class="keyword">export interface</span> <span class="type">LoginResponse</span> {
+  <span class="key">token</span>: <span class="type">string</span>;
+  <span class="key">expiresIn</span>: <span class="type">number</span>; <span class="comment">// seconds</span>
+}
+
+<span class="keyword">export interface</span> <span class="type">LoginError</span> {
+  <span class="key">code</span>: <span class="string">'INVALID_CREDENTIALS'</span>
+      | <span class="string">'ACCOUNT_LOCKED'</span>;
+  <span class="key">message</span>: <span class="type">string</span>;
+  <span class="key">retryAfter</span>?: <span class="type">number</span>;
+}</pre>
+        </div>
+        <div class="spec-block">
+          <div class="spec-block-head">
+            <span>validators/user-login.ts</span>
+            <span class="spec-lang">Zod</span>
+          </div>
+          <pre><span class="keyword">import</span> { z } <span class="keyword">from</span> <span class="string">'zod'</span>;
+
+<span class="keyword">export const</span> <span class="value">LoginRequestSchema</span> = z.object({
+  <span class="key">email</span>: z.string()
+    .email(<span class="string">'Invalid email format'</span>),
+  <span class="key">password</span>: z.string()
+    .min(<span class="num">8</span>, <span class="string">'Min 8 characters'</span>)
+    .max(<span class="num">128</span>, <span class="string">'Max 128 characters'</span>),
+});
+
+<span class="keyword">export const</span> <span class="value">LoginResponseSchema</span> = z.object({
+  <span class="key">token</span>: z.string().min(<span class="num">1</span>),
+  <span class="key">expiresIn</span>: z.number()
+    .int().positive(),
+});
+
+<span class="comment">// 类型推导，确保与 interface 一致</span>
+<span class="keyword">export type</span> <span class="type">LoginRequestZ</span> =
+  z.infer&lt;<span class="keyword">typeof</span> LoginRequestSchema&gt;;</pre>
+        </div>
+      </div>
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>openapi.yaml (片段)</span>
+          <span class="spec-lang">OpenAPI</span>
+        </div>
+        <pre><span class="key">paths</span>:
+  <span class="key">/api/auth/login</span>:
+    <span class="key">post</span>:
+      <span class="key">summary</span>: <span class="string">User login with email and password</span>
+      <span class="key">requestBody</span>:
+        <span class="key">required</span>: <span class="value">true</span>
+        <span class="key">content</span>:
+          <span class="key">application/json</span>:
+            <span class="key">schema</span>:
+              <span class="key">$ref</span>: <span class="string">'#/components/schemas/LoginRequest'</span>
+      <span class="key">responses</span>:
+        <span class="string">'200'</span>:
+          <span class="key">content</span>:
+            <span class="key">application/json</span>:
+              <span class="key">schema</span>:
+                <span class="key">$ref</span>: <span class="string">'#/components/schemas/LoginResponse'</span>
+        <span class="string">'401'</span>:
+          <span class="key">content</span>:
+            <span class="key">application/json</span>:
+              <span class="key">schema</span>:
+                <span class="key">$ref</span>: <span class="string">'#/components/schemas/LoginError'</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Claude Code 配置</h3>
+      <span class="card-badge cyan">CONFIG</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">CLAUDE.md 规则 + schema-gen Command，从 spec 自动生成三层 Schema</p>
+      <div class="spec-grid">
+        <div class="spec-block">
+          <div class="spec-block-head">
+            <span>CLAUDE.md (Schema 规则)</span>
+            <span class="spec-lang">MARKDOWN</span>
+          </div>
+          <pre><span class="heading">## Schema 规范</span>
+<span class="comment">- TypeScript interface + Zod validator 双层校验</span>
+<span class="comment">- 禁止使用 any / unknown / z.any()</span>
+<span class="comment">- 字符串字段必须声明 format 或 pattern</span>
+<span class="comment">- 数字字段必须声明 min / max 范围</span>
+<span class="comment">- TypeScript 类型与 Zod schema 字段必须 1:1 对应</span></pre>
+        </div>
+        <div class="spec-block">
+          <div class="spec-block-head">
+            <span>.claude/commands/schema-gen.md</span>
+            <span class="spec-lang">COMMAND</span>
+          </div>
+          <pre><span class="heading"># Schema Generator</span>
+
+从 <span class="value">$ARGUMENTS</span> 指定的 spec 文件生成三层 Schema。
+
+<span class="heading">## 执行步骤</span>
+
+<span class="num">1.</span> <span class="keyword">读取 Spec</span>：解析 spec 文件，提取字段、约束和关系
+<span class="num">2.</span> <span class="keyword">检索上下文</span>：查看项目中已有的类型定义和代码风格
+<span class="num">3.</span> <span class="keyword">生成三层</span>：
+   - <span class="value">types/{feature}.ts</span> &mdash; TypeScript interface
+   - <span class="value">validators/{feature}.ts</span> &mdash; Zod schema
+   - 更新 <span class="value">openapi.yaml</span> &mdash; OpenAPI 3.1
+
+<span class="heading">## 约束规则</span>
+
+<span class="value">1.</span> TypeScript 与 Zod 字段 1:1 对应
+<span class="value">2.</span> 字符串必须声明 format 或 pattern
+<span class="value">3.</span> 数字必须声明 min / max
+<span class="value">4.</span> 禁止 <span class="string">any</span> / <span class="string">unknown</span> / <span class="string">z.any()</span>
+<span class="value">5.</span> OpenAPI 包含 error response schema
+<span class="value">6.</span> 风格与现有代码保持一致</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Spec &rarr; Schema 串联流程</h3>
+      <span class="card-badge green">WORKFLOW</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">两个 Command 串联：/speckit-specify 输出的 spec 文件直接作为 /schema-gen 的输入</p>
+      <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1e3a5f', 'primaryTextColor': '#e2e8f0', 'primaryBorderColor': '#4a9eff', 'lineColor': '#4a5f80', 'fontSize': '13px'}}}%%
+flowchart LR
+    A["/speckit-specify<br/>生成 Spec"] --> B["specs/feature.spec.md"]
+    B --> C["/schema-gen<br/>读取 Spec"]
+    C --> D["生成三层 Schema"]
+    D --> E["types/*.ts"]
+    D --> F["validators/*.ts"]
+    D --> G["openapi.yaml"]
+
+    style A fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+    style C fill:#1a1040,stroke:#a78bfa,stroke-width:2px
+    style D fill:#0f2818,stroke:#34d399,stroke-width:2px
+    style E fill:#0f1628,stroke:#22d3ee,stroke-width:1px
+    style F fill:#0f1628,stroke:#22d3ee,stroke-width:1px
+    style G fill:#0f1628,stroke:#22d3ee,stroke-width:1px
+      </div>
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>Terminal</span>
+          <span class="spec-lang">CLI</span>
+        </div>
+        <pre><span class="comment"># Step 1: 结构化需求 spec</span>
+<span class="value">&gt;</span> <span class="key">/speckit-specify</span> <span class="string">用户通过邮箱+密码登录，返回 JWT token</span>
+<span class="comment"># 读取 constitution.md → 生成 specs/user-login.spec.md</span>
+
+<span class="comment"># Step 2: 从 spec 生成三层 Schema</span>
+<span class="value">&gt;</span> <span class="key">/schema-gen</span> <span class="string">specs/user-login.spec.md</span>
+<span class="comment"># 输出 → types/user-login.ts + validators/user-login.ts + openapi.yaml</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <h4>Schema 是 AI 最好理解的"语言"</h4>
+    <p>自然语言有歧义，AI 会猜测。类型定义没有歧义，AI 严格遵守。TypeScript interface 告诉 AI "数据长什么样"，Zod schema 告诉 AI "什么数据是非法的"。类型系统消除 AI 的理解偏差，是最高效的 AI-Human 沟通方式。</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 04: TDD — 测试驱动开发 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">04</span>
+    <span class="st">TDD &mdash; 测试驱动开发</span>
+  </div>
+  <p class="sd">在 Vibe Coding 中，TDD 的角色发生了转变：人写测试定义期望，AI 写实现满足测试。测试不再是"事后补"，而是"事前约束"— 让 AI 有明确的通过标准。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>传统 TDD vs Vibe Coding TDD</h3>
+      <span class="card-badge green">CONCEPT</span>
+    </div>
+    <div class="card-body" style="overflow-x:auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>维度</th>
+            <th>传统 TDD</th>
+            <th>Vibe Coding TDD</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>测试编写者</td>
+            <td>开发者</td>
+            <td class="highlight">人类（或 AI 辅助）定义期望</td>
+          </tr>
+          <tr>
+            <td>实现编写者</td>
+            <td>开发者</td>
+            <td class="highlight">AI 自动生成实现</td>
+          </tr>
+          <tr>
+            <td>测试角色</td>
+            <td>质量保障</td>
+            <td class="warn">方向约束 — 告诉 AI "什么是对的"</td>
+          </tr>
+          <tr>
+            <td>重构执行者</td>
+            <td>开发者</td>
+            <td class="highlight">AI 执行，测试守护</td>
+          </tr>
+          <tr>
+            <td>核心价值</td>
+            <td>发现 bug、指导设计</td>
+            <td class="warn">控制 AI 的实现方向 + 防止回归</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Red-Green-Refactor 循环</h3>
+      <span class="card-badge green">WORKFLOW</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">严格的三阶段纪律：先写失败测试，再写最小实现，最后重构优化</p>
+      <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#0f2818', 'primaryTextColor': '#e2e8f0', 'primaryBorderColor': '#34d399', 'lineColor': '#4a5f80', 'fontSize': '13px'}}}%%
+flowchart LR
+    R["RED<br/>写测试 → 确认 FAIL"] --> G["GREEN<br/>最小实现 → 确认 PASS"]
+    G --> RF["REFACTOR<br/>优化代码 → 确认仍 PASS"]
+    RF --> R
+
+    style R fill:#2a1010,stroke:#f87171,stroke-width:2px
+    style G fill:#0f2818,stroke:#34d399,stroke-width:2px
+    style RF fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+      </div>
+      <div class="op-grid" style="margin-top: 18px;">
+        <div class="op-card cat-orange">
+          <h4>RED — 写测试</h4>
+          <p>从 spec 的验收标准编写测试用例，覆盖正常路径、失败路径、边界条件。运行确认全部 FAIL。测试就是需求的可执行版本。</p>
+        </div>
+        <div class="op-card cat-green">
+          <h4>GREEN — 最小实现</h4>
+          <p>编写最少代码使所有测试通过。禁止修改 RED 阶段的测试文件。不追求完美，只追求"测试全过"。</p>
+        </div>
+        <div class="op-card cat-blue">
+          <h4>REFACTOR — 重构</h4>
+          <p>在测试保护下优化代码：消除重复、改善命名、提取抽象。每次重构后运行测试确认仍然 PASS。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>tdd-runner Agent 定义</h3>
+      <span class="card-badge green">AGENT</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">放置在 .claude/agents/tdd-runner.md，AI 在 TDD 场景中自动委派给此 Agent</p>
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>.claude/agents/tdd-runner.md</span>
+          <span class="spec-lang">AGENT</span>
+        </div>
+        <pre><span class="comment">---</span>
+<span class="key">name</span>: <span class="string">tdd-runner</span>
+<span class="key">description</span>: <span class="type">&gt;</span>
+  <span class="string">Autonomous TDD agent following strict Red-Green-Refactor.</span>
+  <span class="string">Writes tests first, implements minimal code, then refactors.</span>
+  <span class="string">Use this agent when the task involves test-driven development.</span>
+<span class="key">allowed-tools</span>:
+  - <span class="string">Read</span>
+  - <span class="string">Write</span>
+  - <span class="string">Edit</span>
+  - <span class="string">Bash</span>
+  - <span class="string">Glob</span>
+  - <span class="string">Grep</span>
+<span class="comment">---</span>
+
+<span class="heading"># TDD Runner</span>
+
+严格遵循 Red-Green-Refactor 循环。
+
+<span class="heading">## Phase 1: RED — 编写测试</span>
+
+<span class="value">1.</span> 读取 spec 文件理解需求
+<span class="value">2.</span> 编写测试用例，覆盖：
+   - 正常路径（happy path）
+   - 失败路径（错误输入、权限不足）
+   - 边界条件（空值、极值、并发）
+   - 异常处理（网络超时、依赖不可用）
+<span class="value">3.</span> 运行测试，确认全部 <span class="string">FAIL</span>（RED 状态）
+
+<span class="heading">## Phase 2: GREEN — 最小实现</span>
+
+<span class="value">1.</span> 编写最少代码使所有测试通过
+<span class="value">2.</span> <span class="keyword">禁止修改 Phase 1 的测试文件</span>
+<span class="value">3.</span> 运行测试，确认全部 <span class="string">PASS</span>（GREEN 状态）
+
+<span class="heading">## Phase 3: REFACTOR — 重构</span>
+
+<span class="value">1.</span> 在测试通过前提下重构代码
+<span class="value">2.</span> 消除重复、优化命名、提升可读性
+<span class="value">3.</span> 运行测试，确认仍然 <span class="string">PASS</span>
+
+<span class="heading">## Phase 4: DoD — 完成度检查</span>
+
+输出以下检查清单：
+<span class="comment">- [ ] 安全：输入验证、认证鉴权</span>
+<span class="comment">- [ ] 性能：无 N+1、无热路径阻塞</span>
+<span class="comment">- [ ] 可观测性：日志字段、指标、告警</span>
+<span class="comment">- [ ] 测试覆盖率 &gt;= 项目目标值</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>完整配置</h3>
+      <span class="card-badge cyan">CONFIG</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">CLAUDE.md TDD 规则 + 测试文件保护 Hook + Agent vs Command 选择</p>
+      <div class="spec-grid">
+        <div class="spec-block">
+          <div class="spec-block-head">
+            <span>CLAUDE.md (TDD 规则)</span>
+            <span class="spec-lang">MARKDOWN</span>
+          </div>
+          <pre><span class="heading">## TDD 规范</span>
+<span class="comment">- 严格遵循 Red-Green-Refactor 纪律</span>
+<span class="comment">- 先写测试，确认 FAIL 后才写实现</span>
+<span class="comment">- 实现阶段禁止修改测试文件</span>
+<span class="comment">- 每次重构后必须运行测试确认仍然 PASS</span></pre>
+        </div>
+        <div class="spec-block">
+          <div class="spec-block-head">
+            <span>测试文件保护 Hook</span>
+            <span class="spec-lang">JSON</span>
+          </div>
+          <pre>{
+  <span class="key">"matcher"</span>: <span class="string">"Write|Edit"</span>,
+  <span class="key">"hooks"</span>: [
+    {
+      <span class="key">"type"</span>: <span class="string">"command"</span>,
+      <span class="key">"command"</span>: <span class="string">"bash -c 'FILE=\"$TOOL_FILE_PATH\"; if [[ \"$FILE\" == *.test.* ]] || [[ \"$FILE\" == *.spec.* ]]; then echo \"[TDD Hook] Warning: test file modified: $FILE\"; fi'"</span>
+    }
+  ]
+}</pre>
+        </div>
+      </div>
+      <div class="card-body" style="padding-top:0; overflow-x:auto;">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>维度</th>
+              <th>Command</th>
+              <th>Agent</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>触发方式</td>
+              <td>用户通过 /command 手动触发</td>
+              <td class="highlight">AI 自动委派</td>
+            </tr>
+            <tr>
+              <td>运行上下文</td>
+              <td>主会话内（或 fork 子会话）</td>
+              <td class="highlight">独立上下文，天然隔离</td>
+            </tr>
+            <tr>
+              <td>适合场景</td>
+              <td>单步骤或固定多步骤流程</td>
+              <td class="highlight">多阶段自治流程，阶段间有纪律约束</td>
+            </tr>
+            <tr>
+              <td>典型用例</td>
+              <td>speckit-specify、schema-gen、review</td>
+              <td class="highlight">tdd-runner（Red-Green-Refactor 循环）</td>
+            </tr>
+            <tr>
+              <td>配置位置</td>
+              <td>.claude/commands/*.md</td>
+              <td>.claude/agents/*.md</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <h4>Agent 隔离 = TDD 纪律保证</h4>
+    <p>TDD 的难点不是写测试，而是遵守阶段纪律。Agent 在独立上下文中运行，天然隔离了"偷看实现再写测试"的诱惑。大多数流程用 Command 就够了 — 只有 TDD 这种需要严格阶段隔离的场景，才值得用 Agent。</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 05: 三大方法论串联实战 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">05</span>
+    <span class="st">三大方法论串联实战</span>
+  </div>
+  <p class="sd">Speckit 定义需求 &rarr; Schema 锁定契约 &rarr; TDD 验证实现 &rarr; Review 交付前审查。四个命令串联，覆盖从需求到交付的完整生命周期。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>端到端串联流程</h3>
+      <span class="card-badge green">WORKFLOW</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">每一步的输出自然流入下一步，形成闭环</p>
+      <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#0f2818', 'primaryTextColor': '#e2e8f0', 'primaryBorderColor': '#34d399', 'lineColor': '#4a5f80', 'fontSize': '13px'}}}%%
+flowchart LR
+    A["/speckit-specify<br/>结构化需求"] --> B["spec 文件"]
+    B --> C["/schema-gen<br/>三层 Schema"]
+    C --> D["types + validators<br/>+ openapi"]
+    D --> E["tdd-runner<br/>R/G/R 循环"]
+    E --> F["通过测试的<br/>实现代码"]
+    F --> G["/review<br/>交付审查"]
+    G --> H["审查报告"]
+
+    style A fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+    style C fill:#1a1040,stroke:#a78bfa,stroke-width:2px
+    style E fill:#0f2818,stroke:#34d399,stroke-width:2px
+    style G fill:#1f1a08,stroke:#fbbf24,stroke-width:2px
+    style B fill:#0f1628,stroke:#4a5f80,stroke-width:1px
+    style D fill:#0f1628,stroke:#4a5f80,stroke-width:1px
+    style F fill:#0f1628,stroke:#4a5f80,stroke-width:1px
+    style H fill:#0f1628,stroke:#4a5f80,stroke-width:1px
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>完整 CLI 操作序列</h3>
+      <span class="card-badge orange">DEMO</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">以"用户登录"功能为例，从需求到交付的完整操作</p>
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>Terminal</span>
+          <span class="spec-lang">CLI</span>
+        </div>
+        <pre><span class="comment"># ① Speckit — 结构化需求</span>
+<span class="value">&gt;</span> <span class="key">/speckit-specify</span> <span class="string">用户通过邮箱+密码登录，返回 JWT token</span>
+<span class="comment"># 读取 constitution.md → 生成 specs/user-login.spec.md</span>
+<span class="comment"># 包含验收标准、失败策略、技术约束、Plan、Tasks</span>
+
+<span class="comment"># ② Schema — 生成三层数据契约</span>
+<span class="value">&gt;</span> <span class="key">/schema-gen</span> <span class="string">specs/user-login.spec.md</span>
+<span class="comment"># 输出 → types/user-login.ts + validators/user-login.ts + openapi.yaml</span>
+
+<span class="comment"># ③ TDD — Agent 自治执行 Red-Green-Refactor</span>
+<span class="comment"># AI 自动委派 tdd-runner Agent：</span>
+<span class="comment">#   RED   → 从 spec 编写测试 → 确认全部 FAIL</span>
+<span class="comment">#   GREEN → 最小实现 → 确认全部 PASS</span>
+<span class="comment">#   REFACTOR → 优化代码 → 确认仍 PASS</span>
+
+<span class="comment"># ④ Review — 交付前审查</span>
+<span class="value">&gt;</span> <span class="key">/review</span>
+<span class="comment"># fork 子代理审查 → 输出 Blocker / Major / Minor 报告</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>配置清单</h3>
+      <span class="card-badge cyan">CHECKLIST</span>
+    </div>
+    <div class="card-body">
+      <div class="op-grid">
+        <div class="op-card cat-blue">
+          <h4>CLAUDE.md 规则</h4>
+          <ul class="op-list">
+            <li><span class="op-name">Spec 规范</span><span class="op-desc">需求结构化、禁止模糊用词</span><span class="freq-high">&#9733;&#9733;&#9733;</span></li>
+            <li><span class="op-name">Schema 规范</span><span class="op-desc">双层校验、禁止 any</span><span class="freq-high">&#9733;&#9733;&#9733;</span></li>
+            <li><span class="op-name">TDD 规范</span><span class="op-desc">Red-Green-Refactor 纪律</span><span class="freq-high">&#9733;&#9733;&#9733;</span></li>
+            <li><span class="op-name">Review 规范</span><span class="op-desc">结构化审查输出格式</span><span class="freq-mid">&#9733;&#9733;</span></li>
+          </ul>
+        </div>
+        <div class="op-card cat-purple">
+          <h4>Commands</h4>
+          <ul class="op-list">
+            <li><span class="op-name">speckit-specify</span><span class="op-desc">结构化需求 + Plan + Tasks</span><span class="freq-high">&#9733;&#9733;&#9733;</span></li>
+            <li><span class="op-name">schema-gen</span><span class="op-desc">从 spec 生成三层 Schema</span><span class="freq-high">&#9733;&#9733;&#9733;</span></li>
+            <li><span class="op-name">review</span><span class="op-desc">fork 子代理结构化审查</span><span class="freq-mid">&#9733;&#9733;</span></li>
+          </ul>
+        </div>
+        <div class="op-card cat-green">
+          <h4>Agents</h4>
+          <ul class="op-list">
+            <li><span class="op-name">tdd-runner</span><span class="op-desc">自治 TDD 流程，独立上下文隔离</span><span class="freq-mid">&#9733;&#9733;</span></li>
+          </ul>
+        </div>
+        <div class="op-card cat-orange">
+          <h4>Hooks</h4>
+          <ul class="op-list">
+            <li><span class="op-name">测试保护</span><span class="op-desc">PostToolUse 检测测试文件修改</span><span class="freq-high">&#9733;&#9733;&#9733;</span></li>
+            <li><span class="op-name">提交门禁</span><span class="op-desc">PreToolUse 拦截未审查提交</span><span class="freq-mid">&#9733;&#9733;</span></li>
+            <li><span class="op-name">自动格式化</span><span class="op-desc">PostToolUse 编辑后 lint</span><span class="freq-mid">&#9733;&#9733;</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <h4>渐进式采纳 — 不需要全部配齐</h4>
+    <p><strong>最小起步</strong>：CLAUDE.md 写入 Spec 规范 + speckit-specify Command。只需两个文件就能让 AI 按结构化流程工作。<br/><strong>第二步</strong>：加 schema-gen Command + Schema 规范。<br/><strong>第三步</strong>：加 tdd-runner Agent + 测试保护 Hook。<br/>每一步都独立生效，不依赖其他步骤。</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 06: Hooks 门禁与 MCP 增强 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">06</span>
+    <span class="st">Hooks 门禁与 MCP 增强</span>
+  </div>
+  <p class="sd">Hook 是自动触发的强制门禁，不依赖人记住。MCP 是可选的能力增强，提升质量上限。两者服务于上述三大方法论，而非独立存在。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>完整 Hook 组合配置</h3>
+      <span class="card-badge orange">FULL CONFIG</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">每个 Hook 标注了它服务的方法论，按需启用</p>
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>.claude/settings.json</span>
+          <span class="spec-lang">JSON</span>
+        </div>
+        <pre>{
+  <span class="key">"hooks"</span>: {
+    <span class="key">"SessionStart"</span>: [
+      {
+        <span class="comment">// 服务全局 — 会话启动时注入项目上下文</span>
+        <span class="key">"hooks"</span>: [{
+          <span class="key">"type"</span>: <span class="string">"command"</span>,
+          <span class="key">"command"</span>: <span class="string">"bash -c 'echo \"[Context] Project: $(basename $PWD) | Branch: $(git branch --show-current 2&gt;/dev/null || echo none) | Recent: $(git log --oneline -3 2&gt;/dev/null || echo none)\"'"</span>
+        }]
+      }
+    ],
+    <span class="key">"PreToolUse"</span>: [
+      {
+        <span class="comment">// 服务 Review — 提交前强制审查</span>
+        <span class="key">"matcher"</span>: <span class="string">"Bash"</span>,
+        <span class="key">"hooks"</span>: [{
+          <span class="key">"type"</span>: <span class="string">"command"</span>,
+          <span class="key">"command"</span>: <span class="string">"bash -c 'if echo \"$TOOL_INPUT\" | grep -q \"git commit\"; then echo \"[Review Hook] Run /review before committing\"; fi'"</span>
+        }]
+      }
+    ],
+    <span class="key">"PostToolUse"</span>: [
+      {
+        <span class="key">"matcher"</span>: <span class="string">"Write|Edit"</span>,
+        <span class="key">"hooks"</span>: [
+          {
+            <span class="comment">// 服务 TDD — 测试文件保护</span>
+            <span class="key">"type"</span>: <span class="string">"command"</span>,
+            <span class="key">"command"</span>: <span class="string">"bash -c 'FILE=\"$TOOL_FILE_PATH\"; if [[ \"$FILE\" == *.test.* ]] || [[ \"$FILE\" == *.spec.* ]]; then echo \"[TDD Hook] Warning: test file modified: $FILE\"; fi'"</span>
+          },
+          {
+            <span class="comment">// 服务全局 — 自动格式化</span>
+            <span class="key">"type"</span>: <span class="string">"command"</span>,
+            <span class="key">"command"</span>: <span class="string">"bash -c 'npx eslint --fix \"$TOOL_FILE_PATH\" 2&gt;/dev/null || true'"</span>
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="op-grid">
+    <div class="op-card cat-orange">
+      <h4>Hook 类型 vs 门禁场景</h4>
+      <ul class="op-list">
+        <li><span class="op-name">SessionStart</span><span class="op-desc">会话启动时注入上下文、加载项目信息</span><span class="freq-mid">&#9733;&#9733;</span></li>
+        <li><span class="op-name">PreToolUse</span><span class="op-desc">拦截危险操作（git commit 前强制审查）</span><span class="freq-high">&#9733;&#9733;&#9733;</span></li>
+        <li><span class="op-name">PostToolUse</span><span class="op-desc">编辑后自动检查（测试保护、自动 lint）</span><span class="freq-high">&#9733;&#9733;&#9733;</span></li>
+        <li><span class="op-name">PromptSubmit</span><span class="op-desc">用户输入时自动增强上下文</span><span class="freq-low">&#9733;</span></li>
+      </ul>
+    </div>
+    <div class="op-card cat-green">
+      <h4>门禁设计原则</h4>
+      <ul class="op-list">
+        <li><span class="op-name">最小干扰</span><span class="op-desc">Hook 提醒而非阻断，保持工作流顺畅</span><span class="freq-high">&#9733;&#9733;&#9733;</span></li>
+        <li><span class="op-name">快速执行</span><span class="op-desc">Hook 脚本控制在秒级完成，不拖慢操作</span><span class="freq-high">&#9733;&#9733;&#9733;</span></li>
+        <li><span class="op-name">静默成功</span><span class="op-desc">正常情况无输出，只在异常时报警</span><span class="freq-mid">&#9733;&#9733;</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 24px;">
+    <div class="card-head">
+      <h3>MCP 可选增强</h3>
+      <span class="card-badge pink">OPTIONAL</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">MCP 不是基础设施，而是质量提升。没有 MCP，三大方法论照样运行</p>
+      <div class="spec-grid">
+        <div class="spec-block">
+          <div class="spec-block-head">
+            <span>codebase-retrieval</span>
+            <span class="spec-lang">MCP</span>
+          </div>
+          <pre><span class="comment">// 增强 Schema-Driven：生成前检索现有代码风格</span>
+<span class="comment">// 让 /schema-gen 输出与项目风格一致</span>
+{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"augment"</span>: {
+      <span class="key">"command"</span>: <span class="string">"augment-mcp-server"</span>,
+      <span class="key">"args"</span>: []
+    }
+  }
+}</pre>
+        </div>
+        <div class="spec-block">
+          <div class="spec-block-head">
+            <span>prompt-enhancer</span>
+            <span class="spec-lang">MCP</span>
+          </div>
+          <pre><span class="comment">// 增强 Speckit：自动将模糊需求转化为结构化描述</span>
+<span class="comment">// 提升 /speckit-specify 的输入质量</span>
+{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"prompt-enhancer"</span>: {
+      <span class="key">"command"</span>: <span class="string">"npx"</span>,
+      <span class="key">"args"</span>: [<span class="string">"-y"</span>, <span class="string">"prompt-enhancer-mcp"</span>]
+    }
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <h4>Hook 是强制执行，MCP 是质量提升</h4>
+    <p>Hook 确保规范不被绕过 — 测试文件被改了会告警，提交前没审查会提醒。MCP 提升规范的执行质量 — 让 Schema 生成更贴合项目风格，让需求描述更精确。优先配好 Hook 门禁，再按需加 MCP 增强。</p>
+  </div>
+</div>
+
+<!-- ========== 结尾 Insight ========== -->
+<div class="section">
+  <div class="insight">
+    <h4>三条规范，三个控制点</h4>
+    <p><strong>Speckit</strong> 守住需求入口 — 让 AI 知道"做什么"。<strong>Schema-Driven</strong> 守住设计阶段 — 让 AI 知道"数据长什么样"。<strong>TDD</strong> 守住实现阶段 — 让 AI 知道"什么是对的"。三个控制点串联，就是 Vibe Coding 的质量底线。</p>
+    <p style="margin-top: 10px;"><strong>渐进路线</strong>：CLAUDE.md 写入规则（零成本起步）&rarr; 加 speckit-specify + schema-gen Command &rarr; 加 tdd-runner Agent + Hook 门禁 &rarr; 按需加 MCP 增强。每一步都独立生效，不需要全部配齐。</p>
+  </div>
+</div>
+
+<!-- ========== BOTTOM NAV ========== -->
+<div class="bottom-nav">
+  <a href="agent-hooks.html" class="bottom-nav-card prev">
+    <div class="nav-dir">&larr; 上一章</div>
+    <h4>05 &middot; Agent &middot; Hooks &middot; 权限</h4>
+    <p>Agent 与 Subagent 的工作模式，生命周期 Hooks 与权限模型</p>
+  </a>
+  <a href="advanced-practice.html" class="bottom-nav-card next">
+    <div class="nav-dir">下一章 &rarr;</div>
+    <h4>07 &middot; 进阶实战</h4>
+    <p>多模型协作、自定义 MCP Server、成本控制与渐进式实践</p>
+  </a>
+</div>
+
+</div>
+
+<!-- ========== FOOTER ========== -->
+<div class="footer">
+  AI CLI TOOLS TUTORIAL &middot; CHAPTER 06 &middot; 2026 &middot; <a href="index.html">返回主页</a>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    securityLevel: 'loose',
+    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+  });
+</script>
+</body>
+</html>

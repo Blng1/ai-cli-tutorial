@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 工具全景与选型 - AI CLI 工具通识教学</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600&family=DM+Serif+Display&display=swap');
+
+  :root {
+    --bg: #060a12;
+    --bg-raised: #0b1120;
+    --bg-card: #0f1628;
+    --bg-card-alt: #0a0f1e;
+    --border: #192240;
+    --border-focus: #2a4080;
+    --blue: #4a9eff;
+    --cyan: #22d3ee;
+    --purple: #a78bfa;
+    --green: #34d399;
+    --orange: #fbbf24;
+    --red: #f87171;
+    --pink: #f472b6;
+    --teal: #2dd4bf;
+    --text: #dce4f0;
+    --text2: #8295b5;
+    --text3: #4a5f80;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 80px 32px 56px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 40% at 30% 10%, rgba(74,158,255,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 70% 90%, rgba(167,139,250,0.04) 0%, transparent 70%);
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.2);
+    padding: 5px 16px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.8rem;
+    position: relative;
+    background: linear-gradient(135deg, #dce4f0 20%, #4a9eff 50%, #a78bfa 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 14px;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+    color: var(--text2);
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  .container { max-width: 1340px; margin: 0 auto; padding: 48px 28px; }
+  .section { margin-bottom: 64px; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .sn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.2);
+    padding: 3px 10px;
+    border-radius: 5px;
+  }
+
+  .st { font-size: 1.5rem; font-weight: 700; }
+
+  .sd {
+    color: var(--text2);
+    font-size: 0.88rem;
+    margin-bottom: 26px;
+    max-width: 940px;
+    border-left: 3px solid var(--border);
+    padding-left: 16px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    transition: border-color 0.3s;
+  }
+
+  .card:hover { border-color: var(--border-focus); }
+
+  .card-head {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-card-alt);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-head h3 { font-size: 1rem; font-weight: 600; }
+
+  .card-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: rgba(74,158,255,0.1);
+    color: var(--blue);
+    border: 1px solid rgba(74,158,255,0.2);
+  }
+
+  .card-body { padding: 24px; }
+
+  .card-note {
+    font-size: 0.8rem;
+    color: var(--text3);
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+
+  /* Compare Table */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+
+  .compare-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text3);
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+    background: var(--bg-card-alt);
+    white-space: nowrap;
+  }
+
+  .compare-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(25,34,64,0.5);
+    color: var(--text2);
+    vertical-align: top;
+  }
+
+  .compare-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .compare-table tr:hover td {
+    background: rgba(74,158,255,0.03);
+  }
+
+  .compare-table td:first-child {
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .compare-table .highlight {
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  .compare-table .dim {
+    color: var(--text3);
+    font-weight: 400;
+  }
+
+  .compare-table .warn {
+    color: var(--orange);
+    font-weight: 500;
+  }
+
+  /* Dimension Cards Grid */
+  .dim-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 20px;
+  }
+
+  .dim-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .dim-card:hover { border-color: var(--border-focus); }
+
+  .dim-card-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-card-alt);
+  }
+
+  .dim-card-head h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .dim-card-body {
+    padding: 20px;
+  }
+
+  .dim-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(25,34,64,0.4);
+    font-size: 0.82rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .dim-item:last-child {
+    border-bottom: none;
+  }
+
+  .dim-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .dim-label.cc { background: rgba(74,158,255,0.12); color: var(--blue); border: 1px solid rgba(74,158,255,0.2); }
+  .dim-label.oc { background: rgba(167,139,250,0.12); color: var(--purple); border: 1px solid rgba(167,139,250,0.2); }
+  .dim-label.gp { background: rgba(34,211,238,0.12); color: var(--cyan); border: 1px solid rgba(34,211,238,0.2); }
+  .dim-label.cu { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+
+  /* Insight Box */
+  .insight {
+    background: linear-gradient(135deg, rgba(74,158,255,0.05), rgba(167,139,250,0.05));
+    border: 1px solid rgba(74,158,255,0.18);
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin: 24px 0;
+  }
+
+  .insight h4 {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+
+  .insight p {
+    font-size: 0.84rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* Mermaid */
+  .mermaid {
+    display: flex;
+    justify-content: center;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    padding: 24px 16px;
+    overflow-x: auto;
+    border: 1px solid rgba(25,34,64,0.6);
+  }
+
+  .mermaid svg { max-width: 100%; height: auto; }
+
+  .footer {
+    text-align: center;
+    padding: 36px;
+    border-top: 1px solid var(--border);
+    color: var(--text3);
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .footer a {
+    color: var(--text3);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer a:hover { color: var(--blue); }
+
+  /* Responsive */
+  @media (max-width: 860px) {
+    .hero h1 { font-size: 2rem; }
+    .compare-table { font-size: 0.74rem; }
+    .compare-table th, .compare-table td { padding: 10px 10px; }
+    .dim-grid { grid-template-columns: 1fr; }
+    .card-body { padding: 16px; overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav style="display:flex;justify-content:space-between;align-items:center;padding:12px 28px;border-bottom:1px solid #192240;background:#0b1120;font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
+  <a href="index.html" style="color:#8295b5;text-decoration:none;">&larr; 返回主页</a>
+  <span style="color:#4a5f80;">01 / 07</span>
+  <a href="context-engineering.html" style="color:#8295b5;text-decoration:none;">下一章 &rarr;</a>
+</nav>
+
+<!-- ========== HERO ========== -->
+<div class="hero">
+  <div class="hero-tag">CHAPTER 01</div>
+  <h1>工具全景与选型</h1>
+  <p>Claude Code、OpenCode、GLM Plan、Cursor 四大 AI 编码工具（CLI / IDE）的特性对比与选型指南</p>
+</div>
+
+<div class="container">
+
+<!-- ========== SECTION 01: 工具定位总览 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">01</span>
+    <span class="st">工具定位总览</span>
+  </div>
+  <p class="sd">从产品形态、开源策略、模型绑定、价格等维度全面对比四大工具，快速了解各工具的核心差异与市场定位（动态数据会随版本变化）。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>工具基本面对比</h3>
+      <span class="card-badge">OVERVIEW</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">数据快照日期：2026-02-12（Stars、价格与能力项均可能快速变化，请以官方文档为准）</p>
+      <div style="overflow-x:auto;">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>维度</th>
+              <th>Claude Code</th>
+              <th>OpenCode</th>
+              <th>GLM Plan</th>
+              <th>Cursor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>形态</td>
+              <td>Terminal CLI</td>
+              <td>Terminal TUI</td>
+              <td>Terminal CLI</td>
+              <td>IDE + Agent</td>
+            </tr>
+            <tr>
+              <td>开发商</td>
+              <td>Anthropic</td>
+              <td>开源社区</td>
+              <td>智谱 AI (Z.ai)</td>
+              <td>Anysphere</td>
+            </tr>
+            <tr>
+              <td>开源</td>
+              <td class="warn">源码可见 / 非 OSI 开源许可</td>
+              <td class="highlight">MIT 开源</td>
+              <td class="warn">部分开源（生态组件）</td>
+              <td class="dim">否 (闭源)</td>
+            </tr>
+            <tr>
+              <td>GitHub Stars</td>
+              <td class="highlight">66.2K</td>
+              <td class="highlight">102.7K</td>
+              <td class="dim">&mdash;</td>
+              <td class="dim">&mdash;</td>
+            </tr>
+            <tr>
+              <td>模型绑定</td>
+              <td class="warn">Claude 系列</td>
+              <td class="highlight">75+ 提供商（含本地模型）</td>
+              <td class="warn">GLM 系列</td>
+              <td>多模型</td>
+            </tr>
+            <tr>
+              <td>价格</td>
+              <td>Pro $20 / Max $100-200</td>
+              <td class="highlight">免费 (BYOK)</td>
+              <td class="highlight">按模型计费 + 免费额度</td>
+              <td>$20/月起 + 用量计费</td>
+            </tr>
+            <tr>
+              <td>定位</td>
+              <td class="highlight">深度 Agentic 开发</td>
+              <td>灵活开源替代</td>
+              <td>国产高性价比</td>
+              <td>GUI 优先体验</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 02: 核心概念支持矩阵 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">02</span>
+    <span class="st">核心概念支持矩阵</span>
+  </div>
+  <p class="sd">对比各工具在 Context Engineering、Skills、Agent、MCP 等核心概念上的支持程度，帮助你判断哪个工具最符合你的技术栈需求。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>核心能力对比</h3>
+      <span class="card-badge">FEATURE MATRIX</span>
+    </div>
+    <div class="card-body">
+      <div style="overflow-x:auto;">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>核心概念</th>
+              <th>Claude Code</th>
+              <th>OpenCode</th>
+              <th>GLM Plan</th>
+              <th>Cursor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Context Engineering</td>
+              <td class="highlight">CLAUDE.md + 层级记忆</td>
+              <td class="highlight">AGENTS.md (完善)</td>
+              <td class="dim">有限支持</td>
+              <td>.cursor/rules</td>
+            </tr>
+            <tr>
+              <td>Skills</td>
+              <td class="highlight">原生 Skills 系统</td>
+              <td class="highlight">原生 Skills 系统</td>
+              <td class="dim">不支持</td>
+              <td>Skills / Subagents</td>
+            </tr>
+            <tr>
+              <td>Agent / Subagent</td>
+              <td class="highlight">原生子 Agent</td>
+              <td class="highlight">原生 Agent</td>
+              <td class="dim">有限</td>
+              <td>Background Agent</td>
+            </tr>
+            <tr>
+              <td>MCP</td>
+              <td class="highlight">协议创造者</td>
+              <td class="highlight">完整支持</td>
+              <td>MCP Servers（生态建设中）</td>
+              <td class="highlight">完整支持</td>
+            </tr>
+            <tr>
+              <td>Hooks</td>
+              <td class="highlight">生命周期钩子</td>
+              <td>支持</td>
+              <td class="dim">有限</td>
+              <td class="dim">有限</td>
+            </tr>
+            <tr>
+              <td>Permission Model</td>
+              <td class="highlight">细粒度模式（default/plan 等）</td>
+              <td>allow / ask / deny 规则化</td>
+              <td class="dim">基础</td>
+              <td>项目级控制</td>
+            </tr>
+            <tr>
+              <td>Commands</td>
+              <td>/slash 命令</td>
+              <td>/slash 命令</td>
+              <td>基础命令</td>
+              <td>命令面板</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 03: 选型维度分析 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">03</span>
+    <span class="st">选型维度分析</span>
+  </div>
+  <p class="sd">从模型灵活性、成本控制、自主度三大维度深入分析，帮助你根据自身场景做出最优选择。</p>
+
+  <div class="dim-grid">
+
+    <!-- Card 1: 模型锁定 vs 灵活性 -->
+    <div class="dim-card">
+      <div class="dim-card-head">
+        <h4>模型锁定 vs 灵活性</h4>
+      </div>
+      <div class="dim-card-body">
+        <div class="dim-item">
+          <span class="dim-label cc">Claude Code</span>
+          <span>深度绑定 Claude，功能最先获得，但无法切换模型</span>
+        </div>
+        <div class="dim-item">
+          <span class="dim-label oc">OpenCode</span>
+          <span>任意模型提供商，最大灵活性，可用 Claude / GPT / Gemini / 本地模型</span>
+        </div>
+        <div class="dim-item">
+          <span class="dim-label gp">GLM Plan</span>
+          <span>绑定 GLM 系列，国内访问友好</span>
+        </div>
+        <div class="dim-item">
+          <span class="dim-label cu">Cursor</span>
+          <span>支持多模型切换，但部分高级功能仅限特定模型</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: 价格与成本 -->
+    <div class="dim-card">
+      <div class="dim-card-head">
+        <h4>价格与成本</h4>
+      </div>
+      <div class="dim-card-body">
+        <div class="dim-item">
+          <span class="dim-label cc">Claude Code</span>
+          <span>Pro $20/月, Max $100-200/月 (包含 Claude 用量)</span>
+        </div>
+        <div class="dim-item">
+          <span class="dim-label oc">OpenCode</span>
+          <span>工具免费, 按模型 API 计费 (BYOK)</span>
+        </div>
+        <div class="dim-item">
+          <span class="dim-label gp">GLM Plan</span>
+          <span>按模型分档计费（输入/输出分开），以官方价目为准</span>
+        </div>
+        <div class="dim-item">
+          <span class="dim-label cu">Cursor</span>
+          <span>$20/月起, 含一定用量, 超出按量计费</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: 自主度与控制 -->
+    <div class="dim-card">
+      <div class="dim-card-head">
+        <h4>自主度与控制</h4>
+      </div>
+      <div class="dim-card-body">
+        <div class="dim-item">
+          <span class="dim-label cc">Claude Code</span>
+          <span>细粒度权限模式（default / acceptEdits / plan / dontAsk / bypassPermissions）</span>
+        </div>
+        <div class="dim-item">
+          <span class="dim-label oc">OpenCode</span>
+          <span>规则化审批机制（allow / ask / deny），可按命令与路径细化</span>
+        </div>
+        <div class="dim-item">
+          <span class="dim-label gp">GLM Plan</span>
+          <span>基础权限控制</span>
+        </div>
+        <div class="dim-item">
+          <span class="dim-label cu">Cursor</span>
+          <span>支持 Background Agent，适合并行执行与 IDE 协作</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== SECTION 04: 选型决策树 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">04</span>
+    <span class="st">选型决策树</span>
+  </div>
+  <p class="sd">根据你的首要需求，沿决策树快速定位最适合的工具。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>选型决策流程</h3>
+      <span class="card-badge">DECISION TREE</span>
+    </div>
+    <div class="card-body">
+      <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1e3a5f', 'primaryTextColor': '#e2e8f0', 'primaryBorderColor': '#4a9eff', 'lineColor': '#4a5f80', 'fontSize': '13px'}}}%%
+flowchart TD
+    Q["你的首要需求是什么?"]
+    A["最强 AI 编程能力"]
+    B["模型灵活性 / 开源"]
+    C["国内访问 / 性价比"]
+    D["GUI 优先 / IDE 体验"]
+    R1["Claude Code"]
+    R2["OpenCode"]
+    R3["GLM Plan"]
+    R4["Cursor"]
+
+    Q --> A
+    Q --> B
+    Q --> C
+    Q --> D
+    A --> R1
+    B --> R2
+    C --> R3
+    D --> R4
+
+    style Q fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px,color:#e2e8f0
+    style A fill:#0f1628,stroke:#4a9eff,stroke-width:1px,color:#dce4f0
+    style B fill:#0f1628,stroke:#a78bfa,stroke-width:1px,color:#dce4f0
+    style C fill:#0f1628,stroke:#22d3ee,stroke-width:1px,color:#dce4f0
+    style D fill:#0f1628,stroke:#34d399,stroke-width:1px,color:#dce4f0
+    style R1 fill:#0a1a3a,stroke:#4a9eff,stroke-width:2px,color:#4a9eff
+    style R2 fill:#1a0a3a,stroke:#a78bfa,stroke-width:2px,color:#a78bfa
+    style R3 fill:#0a1a2a,stroke:#22d3ee,stroke-width:2px,color:#22d3ee
+    style R4 fill:#0a2a1a,stroke:#34d399,stroke-width:2px,color:#34d399
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 05: 教学补充建议 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">05</span>
+    <span class="st">教学补充建议</span>
+  </div>
+  <p class="sd">为了让学习者“看完能上手、上手不翻车”，建议把对比课从静态参数扩展到实操与治理维度。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>建议增加的教学模块</h3>
+      <span class="card-badge">TEACHING UPGRADE</span>
+    </div>
+    <div class="card-body">
+      <div style="overflow-x:auto;">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>补充维度</th>
+              <th>为什么重要</th>
+              <th>课堂落地方式</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>同题 Benchmark</td>
+              <td>避免只看营销词，回到真实任务表现</td>
+              <td>统一任务：改接口 + 补测试 + 提 PR，对比成功率/耗时/人工介入</td>
+            </tr>
+            <tr>
+              <td>成本拆解</td>
+              <td>“价格”不等于“总成本”</td>
+              <td>拆成订阅费、Token费、失败重试、上下文长度与并发成本</td>
+            </tr>
+            <tr>
+              <td>权限与安全</td>
+              <td>决定是否能在团队/生产环境落地</td>
+              <td>演示 allow/ask/deny、危险命令拦截、敏感文件保护</td>
+            </tr>
+            <tr>
+              <td>生态可迁移性</td>
+              <td>降低未来迁移工具的重构成本</td>
+              <td>按 Rules / Skills / MCP / Hooks 设计“可移植提示资产”</td>
+            </tr>
+            <tr>
+              <td>失效数据治理</td>
+              <td>Stars/价格/模型能力更新很快</td>
+              <td>每页标注快照日期 + 官方链接，按月复核一次</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== INSIGHT ========== -->
+<div class="section">
+  <div class="insight">
+    <h4>选型建议</h4>
+    <p>没有绝对最好的工具，只有最适合你的。建议先按你的真实任务（例如“改一个接口 + 补测试 + 提交 PR”）做同题试跑，再从成功率、耗时、人工介入次数与成本四个指标做选择：重度终端与深度 Agentic 可优先 <strong>Claude Code</strong>；追求模型灵活性和开源生态可优先 <strong>OpenCode</strong>；重视国内可达性与模型成本可尝试 <strong>GLM Plan</strong>；偏好 IDE 一体化与可视化流程可优先 <strong>Cursor</strong>。</p>
+  </div>
+</div>
+
+</div>
+
+<!-- ========== BOTTOM NAV ========== -->
+<div style="display:flex;justify-content:space-between;padding:24px 28px;border-top:1px solid #192240;">
+  <a href="index.html" style="color:#8295b5;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:0.8rem;">&larr; 返回主页</a>
+  <a href="context-engineering.html" style="color:#4a9eff;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:0.8rem;">下一章: Context Engineering &rarr;</a>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<div class="footer">AI CLI TOOLS TUTORIAL &middot; CHAPTER 01 &middot; 2026</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    securityLevel: 'loose',
+    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+  });
+</script>
+</body>
+</html>

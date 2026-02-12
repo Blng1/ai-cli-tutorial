@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Context Engineering - AI CLI 工具通识教学</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600&family=DM+Serif+Display&display=swap');
+
+  :root {
+    --bg: #060a12;
+    --bg-raised: #0b1120;
+    --bg-card: #0f1628;
+    --bg-card-alt: #0a0f1e;
+    --border: #192240;
+    --border-focus: #2a4080;
+    --blue: #4a9eff;
+    --cyan: #22d3ee;
+    --purple: #a78bfa;
+    --green: #34d399;
+    --orange: #fbbf24;
+    --red: #f87171;
+    --pink: #f472b6;
+    --teal: #2dd4bf;
+    --text: #dce4f0;
+    --text2: #8295b5;
+    --text3: #4a5f80;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    text-align: center;
+    padding: 80px 32px 56px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 40% at 30% 10%, rgba(74,158,255,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 70% 90%, rgba(167,139,250,0.04) 0%, transparent 70%);
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.2);
+    padding: 5px 16px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.8rem;
+    position: relative;
+    background: linear-gradient(135deg, #dce4f0 20%, #4a9eff 50%, #a78bfa 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 14px;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+    color: var(--text2);
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  /* ===== Container / Section ===== */
+  .container { max-width: 1340px; margin: 0 auto; padding: 48px 28px; }
+  .section { margin-bottom: 64px; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .sn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.2);
+    padding: 3px 10px;
+    border-radius: 5px;
+  }
+
+  .st { font-size: 1.5rem; font-weight: 700; }
+
+  .sd {
+    color: var(--text2);
+    font-size: 0.88rem;
+    margin-bottom: 26px;
+    max-width: 940px;
+    border-left: 3px solid var(--border);
+    padding-left: 16px;
+  }
+
+  /* ===== Card ===== */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    transition: border-color 0.3s;
+  }
+
+  .card:hover { border-color: var(--border-focus); }
+
+  .card-head {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-card-alt);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-head h3 { font-size: 1rem; font-weight: 600; }
+
+  .card-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: rgba(74,158,255,0.1);
+    color: var(--blue);
+    border: 1px solid rgba(74,158,255,0.2);
+  }
+
+  .card-badge.purple {
+    background: rgba(167,139,250,0.1);
+    color: var(--purple);
+    border: 1px solid rgba(167,139,250,0.2);
+  }
+
+  .card-badge.green {
+    background: rgba(52,211,153,0.1);
+    color: var(--green);
+    border: 1px solid rgba(52,211,153,0.2);
+  }
+
+  .card-badge.orange {
+    background: rgba(251,191,36,0.1);
+    color: var(--orange);
+    border: 1px solid rgba(251,191,36,0.2);
+  }
+
+  .card-badge.cyan {
+    background: rgba(34,211,238,0.1);
+    color: var(--cyan);
+    border: 1px solid rgba(34,211,238,0.2);
+  }
+
+  .card-body { padding: 24px; }
+
+  .card-note {
+    font-size: 0.8rem;
+    color: var(--text3);
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+
+  /* ===== Insight Box ===== */
+  .insight {
+    background: linear-gradient(135deg, rgba(74,158,255,0.05), rgba(167,139,250,0.05));
+    border: 1px solid rgba(74,158,255,0.18);
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin: 24px 0;
+  }
+
+  .insight h4 {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+
+  .insight p {
+    font-size: 0.84rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* ===== Spec Block (code / config display) ===== */
+  .spec-block {
+    background: #080c18;
+    border: 1px solid rgba(25,34,64,0.8);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .spec-block-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    background: rgba(15,22,40,0.8);
+    border-bottom: 1px solid rgba(25,34,64,0.6);
+  }
+
+  .spec-block-head span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+  }
+
+  .spec-block-head .spec-lang {
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.15);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  .spec-block pre {
+    padding: 18px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--text2);
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .spec-block pre .comment { color: var(--text3); }
+  .spec-block pre .keyword { color: var(--purple); }
+  .spec-block pre .heading { color: var(--blue); font-weight: 600; }
+  .spec-block pre .value { color: var(--green); }
+  .spec-block pre .string { color: var(--orange); }
+
+  /* ===== Compare Table ===== */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+
+  .compare-table thead th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text2);
+    background: var(--bg-card-alt);
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .compare-table thead th:first-child {
+    border-radius: 8px 0 0 0;
+  }
+
+  .compare-table thead th:last-child {
+    border-radius: 0 8px 0 0;
+  }
+
+  .compare-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(25,34,64,0.5);
+    color: var(--text2);
+    vertical-align: top;
+  }
+
+  .compare-table tbody td:first-child {
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .compare-table tbody tr:hover td {
+    background: rgba(74,158,255,0.03);
+  }
+
+  .compare-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .compare-table .cell-mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--cyan);
+  }
+
+  .compare-table .cell-dim {
+    color: var(--text3);
+    font-style: italic;
+  }
+
+  .compare-table .cell-check {
+    color: var(--green);
+  }
+
+  /* ===== Op Grid (best practices grid) ===== */
+  .op-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .op-card {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    transition: border-color 0.3s;
+  }
+
+  .op-card:hover { border-color: var(--border-focus); }
+
+  .op-card .op-icon {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    border-radius: 8px;
+    background: rgba(74,158,255,0.08);
+    border: 1px solid rgba(74,158,255,0.15);
+  }
+
+  .op-card h4 {
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .op-card p {
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ===== Op List (alternative list style) ===== */
+  .op-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .op-list li {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(25,34,64,0.4);
+    font-size: 0.84rem;
+    color: var(--text2);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .op-list li:last-child { border-bottom: none; }
+
+  .op-list li .li-marker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.15);
+    padding: 2px 7px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .op-list li strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* ===== Mermaid ===== */
+  .mermaid {
+    display: flex;
+    justify-content: center;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    padding: 24px 16px;
+    overflow-x: auto;
+    border: 1px solid rgba(25,34,64,0.6);
+  }
+
+  .mermaid svg { max-width: 100%; height: auto; }
+
+  .mermaid.hierarchy-map {
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 0%, rgba(74,158,255,0.08) 0%, transparent 65%),
+      linear-gradient(180deg, rgba(10,15,30,0.85), rgba(8,12,24,0.95));
+    border-color: rgba(74,158,255,0.28);
+    padding: 28px 18px;
+  }
+
+  .mermaid-hint {
+    margin-top: 14px;
+    font-size: 0.78rem;
+    color: var(--text3);
+    font-style: italic;
+  }
+
+  /* ===== Bottom Nav ===== */
+  .bottom-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .bottom-nav-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bottom-nav-card:hover {
+    border-color: var(--border-focus);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(74,158,255,0.08);
+  }
+
+  .bottom-nav-card .nav-dir {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .bottom-nav-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .bottom-nav-card p {
+    font-size: 0.78rem;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  .bottom-nav-card.prev { text-align: left; }
+  .bottom-nav-card.next { text-align: right; }
+
+  /* ===== Footer ===== */
+  .footer {
+    text-align: center;
+    padding: 36px;
+    border-top: 1px solid var(--border);
+    color: var(--text3);
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .footer a {
+    color: var(--text3);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer a:hover { color: var(--blue); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .hero { padding: 56px 20px 40px; }
+    .container { padding: 32px 16px; }
+    .op-grid { grid-template-columns: 1fr; }
+    .bottom-nav { grid-template-columns: 1fr; }
+    .compare-table { font-size: 0.72rem; }
+    .compare-table thead th,
+    .compare-table tbody td { padding: 10px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== TOP NAV ========== -->
+<nav style="display:flex;justify-content:space-between;align-items:center;padding:12px 28px;border-bottom:1px solid #192240;background:#0b1120;font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
+  <a href="tools-compare.html" style="color:#8295b5;text-decoration:none;">&larr; 上一章</a>
+  <a href="index.html" style="color:#4a5f80;text-decoration:none;">02 / 07 &middot; 返回主页</a>
+  <a href="skills.html" style="color:#8295b5;text-decoration:none;">下一章 &rarr;</a>
+</nav>
+
+<!-- ========== HERO ========== -->
+<div class="hero">
+  <div class="hero-tag">CHAPTER 02 &middot; KEY</div>
+  <h1>Context Engineering</h1>
+  <p>项目指令文件是 AI 理解你代码库的关键。掌握上下文工程，让 AI 从「通用助手」变为「项目专家」。</p>
+</div>
+
+<div class="container">
+
+<!-- ========== SECTION 01: 什么是 Context Engineering ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">01</span>
+    <span class="st">什么是 Context Engineering</span>
+  </div>
+  <p class="sd">理解这个概念，是高效使用所有 AI CLI 工具的基础。</p>
+
+  <div class="insight">
+    <h4>核心定义</h4>
+    <p>Context Engineering 是通过结构化的项目指令文件，向 AI 提供项目特定的知识、规范和约束，使其输出符合你的项目标准。这是 2026 年 AI 辅助开发中最重要的概念 &mdash; 同样的模型，好的 context 能让产出质量提升数倍。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>有 Context vs 无 Context</h3>
+      <span class="card-badge">CONCEPT</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">结构化的上下文指令是 AI 从通用输出到项目专属输出的关键桥梁</p>
+      <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1e3a5f', 'primaryTextColor': '#e2e8f0', 'primaryBorderColor': '#4a9eff', 'lineColor': '#4a5f80', 'fontSize': '13px'}}}%%
+flowchart LR
+    A["你的代码库"] --> B["Context\n指令文件"]
+    B --> C["AI Agent"]
+    C --> D["符合项目标准\n的高质量代码"]
+
+    E["无 Context"] --> C2["AI Agent"]
+    C2 --> F["通用风格\n不了解项目"]
+
+    style A fill:#1e3a5f,stroke:#4a9eff,stroke-width:2px
+    style B fill:#1a1040,stroke:#a78bfa,stroke-width:2px
+    style C fill:#0f1628,stroke:#22d3ee,stroke-width:2px
+    style D fill:#081f18,stroke:#34d399,stroke-width:2px
+    style E fill:#2a1a1a,stroke:#f87171,stroke-width:2px
+    style C2 fill:#0f1628,stroke:#22d3ee,stroke-width:2px
+    style F fill:#2a1a1a,stroke:#f87171,stroke-width:2px
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 02: 各工具的 Context 文件 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">02</span>
+    <span class="st">各工具的 Context 文件</span>
+  </div>
+  <p class="sd">不同的 AI CLI 工具使用不同的指令文件格式，但核心理念一致：为 AI 提供项目专属知识。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Context 文件对比矩阵</h3>
+      <span class="card-badge">COMPARISON</span>
+    </div>
+    <div class="card-body" style="overflow-x:auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>维度</th>
+            <th>Claude Code</th>
+            <th>OpenCode</th>
+            <th>Cursor</th>
+            <th>GLM 方案</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>文件名</td>
+            <td class="cell-mono">CLAUDE.md + .claude/rules/*.md</td>
+            <td class="cell-mono">AGENTS.md（兼容 CLAUDE.md）</td>
+            <td class="cell-mono">.cursor/rules/*.mdc / AGENTS.md</td>
+            <td>沿用接入工具的上下文文件</td>
+          </tr>
+          <tr>
+            <td>位置</td>
+            <td>项目根或 <span class="cell-mono">.claude/</span> 目录</td>
+            <td>项目根 + <span class="cell-mono">~/.config/opencode/</span></td>
+            <td><span class="cell-mono">.cursor/rules/</span> + User/Team Rules</td>
+            <td>无独立格式（依赖接入工具）</td>
+          </tr>
+          <tr>
+            <td>层级</td>
+            <td>组织 + 用户 + 项目 + 局部 + 自动记忆</td>
+            <td>全局 + 项目</td>
+            <td>User + Project + Team + AGENTS.md</td>
+            <td>复用接入工具层级</td>
+          </tr>
+          <tr>
+            <td>自动加载</td>
+            <td class="cell-check">是</td>
+            <td class="cell-check">是</td>
+            <td class="cell-check">是</td>
+            <td>取决于接入工具</td>
+          </tr>
+          <tr>
+            <td>条件触发</td>
+            <td><span class="cell-mono">paths</span> 规则 + 子目录按需加载</td>
+            <td>向上查找 + 优先级覆盖</td>
+            <td>glob 匹配规则</td>
+            <td>由接入工具决定</td>
+          </tr>
+          <tr>
+            <td>版本控制</td>
+            <td>纳入 Git</td>
+            <td>纳入 Git</td>
+            <td>纳入 Git</td>
+            <td>沿用接入工具实践</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="insight">
+    <h4>选型建议</h4>
+    <p>Claude Code 目前是更完整的多层 memory + rules 体系（不仅是三层），适合复杂项目；OpenCode 与 Cursor 适合用统一规范进行跨工具适配。团队实践上，建议先维护一份“工具无关”的核心规范，再映射到各工具格式。</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 03: CLAUDE.md 深度解析 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">03</span>
+    <span class="st">CLAUDE.md 深度解析</span>
+  </div>
+  <p class="sd">CLAUDE.md 与 .claude/rules 构成 Claude Code 的核心指令体系，并与用户记忆、自动记忆协同工作。本节聚焦可落地的文件结构与分层方式。</p>
+
+  <!-- Card 1: 文件结构 -->
+  <div class="card">
+    <div class="card-head">
+      <h3>文件结构</h3>
+      <span class="card-badge purple">STRUCTURE</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">一个典型的 CLAUDE.md 应包含技术栈、代码风格、常用命令和项目架构</p>
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>CLAUDE.md</span>
+          <span class="spec-lang">MARKDOWN</span>
+        </div>
+        <pre><span class="heading"># Project: My App</span>
+
+<span class="heading">## Tech Stack</span>
+<span class="value">- Frontend: React + TypeScript</span>
+<span class="value">- Backend: Node.js + Express</span>
+<span class="value">- Database: PostgreSQL</span>
+
+<span class="heading">## Code Style</span>
+- Use functional components
+- Prefer named exports
+- All functions must have JSDoc comments
+
+<span class="heading">## Commands</span>
+<span class="string">- `npm run dev`</span> <span class="comment">— start dev server</span>
+<span class="string">- `npm test`</span> <span class="comment">— run test suite</span>
+<span class="string">- `npm run lint`</span> <span class="comment">— run linter</span>
+
+<span class="heading">## Architecture</span>
+<span class="value">- src/components/</span> <span class="comment">— React components</span>
+<span class="value">- src/services/</span> <span class="comment">— business logic</span>
+<span class="value">- src/api/</span> <span class="comment">— API routes</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: 层级系统 -->
+  <div class="card">
+    <div class="card-head">
+      <h3>层级系统</h3>
+      <span class="card-badge cyan">HIERARCHY</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">先记一条核心规则：越接近当前任务文件的指令，优先级越高；全局规则提供基线，局部规则做精确约束。</p>
+      <ul class="op-list">
+        <li>
+          <span class="li-marker">RULE</span>
+          <div><strong>从大到小叠加：</strong>全局偏好 → 项目规范 → 模块规则 → 个人本地偏好。</div>
+        </li>
+        <li>
+          <span class="li-marker">PRIORITY</span>
+          <div><strong>冲突时看“距离”：</strong>离当前修改文件更近的规则覆盖更远的规则。</div>
+        </li>
+        <li>
+          <span class="li-marker">SCOPE</span>
+          <div><strong>内容分配：</strong>全局放习惯，项目放共识，模块放专项要求，本地放不入库的个人配置。</div>
+        </li>
+      </ul>
+
+      <ul class="op-list">
+        <li>
+          <span class="li-marker">L1</span>
+          <div><strong>~/.claude/CLAUDE.md / ~/.claude/rules/ &mdash; 用户全局</strong><br>放跨项目都成立的偏好，例如输出语言、代码风格倾向、通用校验习惯。</div>
+        </li>
+        <li>
+          <span class="li-marker">L2</span>
+          <div><strong>项目根/CLAUDE.md 或 .claude/CLAUDE.md &mdash; 项目级指令</strong><br>放团队共识，建议纳入 Git。包含架构边界、技术栈、必跑命令、提交流程。</div>
+        </li>
+        <li>
+          <span class="li-marker">L3</span>
+          <div><strong>.claude/rules/*.md + 子目录 CLAUDE.md &mdash; 模块化/按需规则</strong><br>放专项约束（例如 API、安全、测试）；仅在命中路径或进入子目录时生效。</div>
+        </li>
+        <li>
+          <span class="li-marker">L4</span>
+          <div><strong>CLAUDE.local.md + Auto Memory &mdash; 个人项目局部记忆</strong><br><code style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--cyan);background:rgba(34,211,238,0.06);padding:2px 6px;border-radius:3px;">CLAUDE.local.md</code> 放不入库的个人项目设置；Auto Memory 记录会话中的经验和模式。</div>
+        </li>
+      </ul>
+
+      <div class="mermaid hierarchy-map" style="margin-top:20px;">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1e3a5f', 'primaryTextColor': '#e2e8f0', 'primaryBorderColor': '#4a9eff', 'lineColor': '#6b7da8', 'fontSize': '13px'}, 'flowchart': {'nodeSpacing': 34, 'rankSpacing': 54, 'curve': 'stepBefore'}}}%%
+flowchart TB
+    G["L1 全局偏好\n~/.claude/CLAUDE.md"] -->|提供基线| P["L2 项目共识\n./CLAUDE.md 或 ./.claude/CLAUDE.md"]
+    P -->|细化到模块| R["L3 模块规则\n./.claude/rules/*.md"]
+    R -->|命中路径后生效| S["子目录 CLAUDE.md\n按需加载"]
+    R -->|个人不入库偏好| L["L4 本地文件\nCLAUDE.local.md"]
+    M["Auto Memory\n~/.claude/projects/{project}/memory/"] -.补充历史经验.-> P
+    M -.补充历史经验.-> R
+
+    classDef lv1 fill:#13263e,stroke:#4a9eff,stroke-width:2px,color:#dce4f0;
+    classDef lv2 fill:#21173c,stroke:#a78bfa,stroke-width:2px,color:#dce4f0;
+    classDef lv3 fill:#10281e,stroke:#34d399,stroke-width:2px,color:#dce4f0;
+    classDef lv4 fill:#102235,stroke:#22d3ee,stroke-width:2px,color:#dce4f0;
+    classDef mem fill:#2a1f12,stroke:#fbbf24,stroke-width:2px,color:#f5ddb0;
+    class G lv1;
+    class P lv2;
+    class R,S lv3;
+    class L lv4;
+    class M mem;
+      </div>
+      <p class="mermaid-hint">阅读顺序：先看主干（L1 → L2 → L3），再看右侧分支（子目录/本地），最后看虚线（Auto Memory 补充）。</p>
+    </div>
+  </div>
+
+  <!-- Card 3: 最佳实践 -->
+  <div class="card">
+    <div class="card-head">
+      <h3>最佳实践</h3>
+      <span class="card-badge green">BEST PRACTICES</span>
+    </div>
+    <div class="card-body">
+      <div class="op-grid">
+        <div class="op-card">
+          <div class="op-icon" style="background:rgba(74,158,255,0.08);border-color:rgba(74,158,255,0.15);color:var(--blue);">&#x270F;</div>
+          <h4>保持简洁</h4>
+          <p>避免冗长描述，AI 对简洁、结构化的指令响应更好。用列表而非段落，用关键词而非句子。</p>
+        </div>
+        <div class="op-card">
+          <div class="op-icon" style="background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.15);color:var(--purple);">&#x1F512;</div>
+          <h4>明确约束</h4>
+          <p>指定技术栈版本、代码风格、禁止事项（如"不要使用 any 类型"、"禁止直接操作 DOM"）。约束越明确，AI 输出越可控。</p>
+        </div>
+        <div class="op-card">
+          <div class="op-icon" style="background:rgba(34,211,238,0.08);border-color:rgba(34,211,238,0.15);color:var(--cyan);">&#x2318;</div>
+          <h4>包含命令</h4>
+          <p>列出常用的构建、测试、部署、lint 命令。AI 可以直接使用这些命令来验证代码质量。</p>
+        </div>
+        <div class="op-card">
+          <div class="op-icon" style="background:rgba(52,211,153,0.08);border-color:rgba(52,211,153,0.15);color:var(--green);">&#x2692;</div>
+          <h4>版本控制</h4>
+          <p>将 CLAUDE.md 纳入 Git，作为团队共识文档。新成员加入时，AI 自动获取项目规范，降低沟通成本。</p>
+        </div>
+        <div class="op-card">
+          <div class="op-icon" style="background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.15);color:var(--orange);">&#x21BB;</div>
+          <h4>渐进迭代</h4>
+          <p>从基础信息开始，根据 AI 输出中的问题逐步补充规则。不要试图一次写完所有规则，让实践驱动演进。</p>
+        </div>
+        <div class="op-card">
+          <div class="op-icon" style="background:rgba(244,114,182,0.08);border-color:rgba(244,114,182,0.15);color:var(--pink);">&#x2261;</div>
+          <h4>分层管理</h4>
+          <p>全局放通用偏好（语言、格式），项目放项目规则（技术栈、架构），目录放局部约定（API 风格、测试规范）。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 04: AGENTS.md (OpenCode) ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">04</span>
+    <span class="st">AGENTS.md (OpenCode)</span>
+  </div>
+  <p class="sd">OpenCode 使用 AGENTS.md 作为指令文件，支持项目级与全局级配置，并提供与 CLAUDE.md 约定的兼容能力。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>AGENTS.md 配置示例</h3>
+      <span class="card-badge orange">OPENCODE</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">项目根 AGENTS.md 会随仓库生效；全局可放在 <code style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--cyan);background:rgba(34,211,238,0.06);padding:2px 6px;border-radius:3px;">~/.config/opencode/AGENTS.md</code></p>
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>AGENTS.md</span>
+          <span class="spec-lang">MARKDOWN</span>
+        </div>
+        <pre><span class="heading"># Agent Configuration</span>
+
+<span class="heading">## Rules</span>
+- Always use TypeScript strict mode
+- Follow the repository's existing patterns
+- Run tests before committing
+
+<span class="heading">## Tools</span>
+- Use prettier for formatting
+- Use ESLint for linting</pre>
+      </div>
+      <div class="insight" style="margin-top:20px;">
+        <h4>与 CLAUDE.md 的对比</h4>
+        <p>OpenCode 已支持项目级 + 全局级规则，并可兼容 CLAUDE.md 约定。与 Claude Code 相比，差异主要在规则组织方式与优先级细节，而不是“是否有全局能力”。跨工具场景建议采用同一份核心规范进行映射。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 05: .cursor/rules (Cursor) ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">05</span>
+    <span class="st">.cursor/rules (Cursor)</span>
+  </div>
+  <p class="sd">Cursor 使用 .mdc 格式的规则文件，支持 glob 模式匹配，可以针对不同文件类型应用不同规则。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>.cursor/rules 配置示例</h3>
+      <span class="card-badge purple">CURSOR</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">.mdc 文件使用 frontmatter 元数据 + Markdown 内容格式，通过 glob 模式精确匹配目标文件</p>
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>.cursor/rules/react-components.mdc</span>
+          <span class="spec-lang">MDC</span>
+        </div>
+        <pre><span class="keyword">---</span>
+<span class="value">description:</span> <span class="string">React component rules</span>
+<span class="value">globs:</span> <span class="string">src/components/**/*.tsx</span>
+<span class="keyword">---</span>
+
+- Use functional components only
+- Props must be typed with interfaces
+- Include unit tests in __tests__/</pre>
+      </div>
+      <div class="insight" style="margin-top:20px;">
+        <h4>Cursor Rules 的独特优势</h4>
+        <p>Cursor 的 glob 匹配机制允许你为不同类型的文件设置不同规则。例如，组件文件要求写测试，API 路由要求加鉴权中间件，样式文件要求使用 CSS Modules。这种精细度在大型项目中非常有价值。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 06: 全局最佳层级示例 ========== -->
+<div class="section">
+  <div class="section-head">
+    <span class="sn">06</span>
+    <span class="st">全局最佳层级示例（仅结构）</span>
+  </div>
+  <p class="sd">下面给出一个跨工具可复用的层级骨架，只定义文件位置与分层职责，不填具体规则内容。</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>推荐目录骨架</h3>
+      <span class="card-badge green">BLUEPRINT</span>
+    </div>
+    <div class="card-body">
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>context hierarchy</span>
+          <span class="spec-lang">TREE</span>
+        </div>
+        <pre>~/.claude/CLAUDE.md
+~/.config/opencode/AGENTS.md
+
+repo/
+  AGENTS.md
+  .claude/
+    CLAUDE.md
+    rules/
+      00-core.md
+      10-architecture.md
+      20-code-style.md
+      30-testing.md
+      40-security.md
+  .cursor/
+    rules/
+      00-core.mdc
+      10-frontend.mdc
+      20-backend.mdc
+      30-testing.mdc
+  apps/
+    web/
+      AGENTS.md
+    api/
+      AGENTS.md</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>单文件骨架（不填内容）</h3>
+      <span class="card-badge cyan">TEMPLATE</span>
+    </div>
+    <div class="card-body">
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>context template</span>
+          <span class="spec-lang">HEADERS</span>
+        </div>
+        <pre># Scope
+# In-Scope / Out-of-Scope
+# Commands
+# Conventions
+# Constraints
+# Verification Checklist
+# Escalation</pre>
+      </div>
+      <p class="card-note">实践建议：先维护这一套工具无关骨架，再分别映射到 CLAUDE.md / AGENTS.md / .cursor/rules。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 结尾 Insight ========== -->
+<div class="section">
+  <div class="insight">
+    <h4>Context Engineering 的核心原则</h4>
+    <p>Context 文件不是一次性的配置，而是一个持续演化的知识库。最好的做法是：1) 从项目的 README 和文档中提取核心信息；2) 在 AI 犯错时补充规则；3) 让团队成员共同维护。把它想象成"给 AI 的入职文档"。</p>
+  </div>
+</div>
+
+<!-- ========== BOTTOM NAV ========== -->
+<div class="bottom-nav">
+  <a href="tools-compare.html" class="bottom-nav-card prev">
+    <div class="nav-dir">&larr; 上一章</div>
+    <h4>01 &middot; 工具全景与选型</h4>
+    <p>四大工具的特性矩阵对比与选型指南</p>
+  </a>
+  <a href="skills.html" class="bottom-nav-card next">
+    <div class="nav-dir">下一章 &rarr;</div>
+    <h4>03 &middot; Skills 体系</h4>
+    <p>Commands、Skills、Agents 的区别与实践</p>
+  </a>
+</div>
+
+</div>
+
+<!-- ========== FOOTER ========== -->
+<div class="footer">
+  AI CLI TOOLS TUTORIAL &middot; 2026 &middot; <a href="index.html">返回主页</a>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    securityLevel: 'loose',
+    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+  });
+</script>
+</body>
+</html>
