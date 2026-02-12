@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skills 体系 · AI CLI 工具通识教学</title>
+<title>Skills 体系 · AI CLI 工具分享</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600&family=DM+Serif+Display&display=swap');
@@ -35,6 +35,7 @@
     background: var(--bg);
     color: var(--text);
     line-height: 1.75;
+    padding-left: 240px;
   }
 
   /* ===== Hero ===== */
@@ -574,6 +575,7 @@
 </style>
 </head>
 <body>
+<script src="sidebar.js"></script>
 
 <!-- ========== TOP NAV ========== -->
 <nav style="display:flex;justify-content:space-between;align-items:center;padding:12px 28px;border-bottom:1px solid #192240;background:#0b1120;font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
@@ -724,7 +726,7 @@ graph TB
       <span class="card-badge purple">STRUCTURE</span>
     </div>
     <div class="card-body">
-      <p>Skill 文件使用 Markdown 格式，存放在 <code class="inline">.claude/skills/&lt;skill-name&gt;/</code> 目录下，主文件名为 <code class="inline">SKILL.md</code>。文件由 YAML frontmatter (配置) 和 Markdown 正文 (指令) 两部分组成。</p>
+      <p>Skill 文件使用 Markdown 格式，存放在 <code class="inline">.claude/skills/&lt;skill-name&gt;/</code> 目录下，主文件名为 <code class="inline">SKILL.md</code>。文件由 YAML frontmatter (配置) 和 Markdown 正文 (指令) 两部分组成。Claude Code Skills 遵循 <a href="https://agentskills.io" style="color:var(--cyan);text-decoration:none;">Agent Skills</a> 开放标准，并在此基础上扩展了调用控制、子代理执行等高级特性。</p>
 
       <div class="spec-block">
         <div class="spec-head">
@@ -732,117 +734,352 @@ graph TB
           <span>.claude/skills/fix-issue/SKILL.md</span>
         </div>
         <div class="spec-body"><span class="cm">---</span>
+<span class="cm"># ── Agent Skills 标准字段 ──</span>
 <span class="kw">name</span>: fix-issue
 <span class="kw">description</span>: <span class="tag">></span>
   <span class="st">Fix a GitHub issue by number. Read the issue,</span>
   <span class="st">understand requirements, implement the fix,</span>
   <span class="st">write tests, and create a commit.</span>
+<span class="kw">license</span>: <span class="st">MIT</span>
+<span class="kw">metadata</span>:
+  <span class="kw">author</span>: <span class="st">my-team</span>
+  <span class="kw">version</span>: <span class="st">"1.2"</span>
+<span class="cm"># ── Claude Code 扩展字段 ──</span>
 <span class="kw">disable-model-invocation</span>: <span class="num">true</span>
+<span class="kw">argument-hint</span>: <span class="st">[issue-number]</span>
+<span class="kw">allowed-tools</span>: <span class="st">Read Grep Glob Bash(gh *)</span>
 <span class="cm">---</span>
 
 Fix GitHub issue <span class="vr">$ARGUMENTS</span> following our standards.
 
-<span class="num">1.</span> Read the issue description
+<span class="num">1.</span> Read the issue: <span class="fn">!`gh issue view <span class="vr">$ARGUMENTS</span>`</span>
 <span class="num">2.</span> Understand the requirements
 <span class="num">3.</span> Implement the fix
 <span class="num">4.</span> Write tests
 <span class="num">5.</span> Create a commit</div>
       </div>
 
-      <p>目录结构如下：</p>
+      <p><strong>标准目录结构</strong> &mdash; 遵循 Agent Skills 开放规范，支持三类可选子目录：</p>
 
       <div class="spec-block">
         <div class="spec-head">
           <div class="spec-dots"><i></i><i></i><i></i></div>
-          <span>Skill 目录结构</span>
+          <span>Skill 目录结构 (Agent Skills Standard)</span>
         </div>
         <div class="spec-body"><span class="fn">.claude/skills/</span>
 <span class="cm">  ├──</span> <span class="vr">fix-issue/</span>
-<span class="cm">  │   └──</span> <span class="st">SKILL.md</span>           <span class="cm"># 主文件 (必须)</span>
+<span class="cm">  │   └──</span> <span class="st">SKILL.md</span>              <span class="cm"># 主文件 (必须)</span>
 <span class="cm">  ├──</span> <span class="vr">commit/</span>
 <span class="cm">  │   └──</span> <span class="st">SKILL.md</span>
 <span class="cm">  └──</span> <span class="vr">deep-research/</span>
-<span class="cm">      ├──</span> <span class="st">SKILL.md</span>           <span class="cm"># 主文件：概述和导航</span>
-<span class="cm">      ├──</span> <span class="st">reference.md</span>       <span class="cm"># 详细参考 (按需加载)</span>
-<span class="cm">      └──</span> <span class="vr">scripts/</span>
-<span class="cm">          └──</span> <span class="st">helper.py</span>      <span class="cm"># 辅助脚本 (可执行)</span></div>
+<span class="cm">      ├──</span> <span class="st">SKILL.md</span>              <span class="cm"># 主文件：概述和导航 (&lt;500 行)</span>
+<span class="cm">      ├──</span> <span class="vr">scripts/</span>              <span class="cm"># 可执行代码 (Python/Bash/JS)</span>
+<span class="cm">      │   └──</span> <span class="st">extract.py</span>
+<span class="cm">      ├──</span> <span class="vr">references/</span>           <span class="cm"># 参考文档 (按需加载)</span>
+<span class="cm">      │   ├──</span> <span class="st">REFERENCE.md</span>
+<span class="cm">      │   └──</span> <span class="st">FORMS.md</span>
+<span class="cm">      └──</span> <span class="vr">assets/</span>               <span class="cm"># 静态资源 (模板/图表/数据)</span>
+<span class="cm">          └──</span> <span class="st">template.json</span></div>
       </div>
 
-      <p><strong>核心 Frontmatter 字段：</strong></p>
+      <p><strong>渐进式上下文加载 (Progressive Disclosure)</strong> &mdash; Skill 内容分三层按需注入，避免浪费上下文窗口：</p>
 
       <table class="compare-table">
         <thead>
           <tr>
+            <th>层级</th>
+            <th>加载时机</th>
+            <th>Token 开销</th>
+            <th>内容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>L1 元数据</td>
+            <td class="hl-cyan">启动时 (所有 Skill)</td>
+            <td>~100 tokens/Skill</td>
+            <td>frontmatter 的 <code class="inline">name</code> + <code class="inline">description</code></td>
+          </tr>
+          <tr>
+            <td>L2 指令</td>
+            <td class="hl">激活时</td>
+            <td>&lt;5,000 tokens (建议)</td>
+            <td>SKILL.md 正文完整内容</td>
+          </tr>
+          <tr>
+            <td>L3+ 资源</td>
+            <td class="hl-green">按需加载</td>
+            <td>无上限</td>
+            <td><code class="inline">scripts/</code> <code class="inline">references/</code> <code class="inline">assets/</code> 目录文件</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top:24px;"><strong>Frontmatter 字段参考</strong> &mdash; 分为行业标准字段与 Claude Code 扩展字段两组：</p>
+
+      <p style="font-size:0.82rem;color:var(--purple);font-weight:600;margin-bottom:8px;">Agent Skills 开放标准字段 (agentskills.io)</p>
+      <table class="compare-table">
+        <thead>
+          <tr>
             <th>字段</th>
+            <th>必填</th>
+            <th>约束</th>
             <th>说明</th>
-            <th>典型用法</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>name</td>
-            <td>Skill 标识符，也是 <code class="inline">/slash</code> 命令名</td>
-            <td><span class="hl-cyan">fix-issue</span></td>
+            <td class="hl-cyan">是</td>
+            <td>1-64 字符，仅小写字母 + 数字 + 连字符，不能以 <code class="inline">-</code> 开头/结尾，不能含 <code class="inline">--</code>，须与目录名一致</td>
+            <td>Skill 唯一标识符，也是 <code class="inline">/slash</code> 命令名</td>
           </tr>
           <tr>
             <td>description</td>
-            <td>描述用途和触发场景，<strong>AI 自动匹配的核心依据</strong></td>
-            <td><span class="hl-cyan">Fix a GitHub issue by number...</span></td>
+            <td class="hl-cyan">是</td>
+            <td>1-1024 字符，应包含触发关键词和使用场景</td>
+            <td><strong>AI 自动匹配的核心依据</strong>，描述 Skill 做什么以及何时使用</td>
           </tr>
           <tr>
+            <td>license</td>
+            <td class="dim">否</td>
+            <td>许可证名称或引用打包的许可证文件</td>
+            <td>如 <span class="hl-green">MIT</span>、<span class="hl-green">Apache-2.0</span></td>
+          </tr>
+          <tr>
+            <td>compatibility</td>
+            <td class="dim">否</td>
+            <td>最长 500 字符</td>
+            <td>环境要求：目标工具、系统包、网络访问等。如 <span class="hl-orange">Requires git, docker, jq</span></td>
+          </tr>
+          <tr>
+            <td>metadata</td>
+            <td class="dim">否</td>
+            <td>任意 key-value 映射 (字符串值)</td>
+            <td>自定义元数据。如 <code class="inline">author</code>、<code class="inline">version</code>、<code class="inline">tags</code></td>
+          </tr>
+          <tr>
+            <td>allowed-tools</td>
+            <td class="dim">否</td>
+            <td>空格分隔的工具名列表 <span class="key-marker">EXPERIMENTAL</span></td>
+            <td>预批准的工具列表。如 <span class="hl">Read Grep Glob</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:0.82rem;color:var(--blue);font-weight:600;margin-top:20px;margin-bottom:8px;">Claude Code 扩展字段 (code.claude.com)</p>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>字段</th>
+            <th>默认值</th>
+            <th>说明</th>
+            <th>典型场景</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
             <td>disable-model-invocation</td>
-            <td>设为 <code class="inline">true</code> 时仅用户手动触发，AI 不会自动调用</td>
+            <td><code class="inline">false</code></td>
+            <td>设为 <code class="inline">true</code> 时 AI 不会自动触发，仅用户手动 <code class="inline">/name</code> 调用。description 也不会加载到上下文</td>
             <td><span class="hl-orange">/deploy, /commit</span> 等有副作用的操作</td>
           </tr>
           <tr>
             <td>user-invocable</td>
-            <td>设为 <code class="inline">false</code> 时对用户隐藏，仅 AI 自动加载</td>
+            <td><code class="inline">true</code></td>
+            <td>设为 <code class="inline">false</code> 时从 <code class="inline">/</code> 菜单隐藏，仅 AI 根据 description 自动加载</td>
             <td><span class="hl-purple">api-conventions</span> 等背景知识</td>
           </tr>
           <tr>
-            <td>allowed-tools</td>
-            <td>限制 Skill 激活时可用的工具列表</td>
-            <td><span class="hl">Read, Grep, Glob</span> (只读模式)</td>
+            <td>argument-hint</td>
+            <td>&mdash;</td>
+            <td>自动补全时显示的参数提示</td>
+            <td><span class="hl-cyan">[issue-number]</span>、<span class="hl-cyan">[filename] [format]</span></td>
           </tr>
           <tr>
             <td>context</td>
-            <td><code class="inline">fork</code> = 在独立子代理中执行，隔离上下文</td>
+            <td>&mdash;</td>
+            <td>设为 <code class="inline">fork</code> 时在独立子代理中执行，隔离上下文</td>
             <td><span class="hl-green">deep-research</span> 等高产出任务</td>
           </tr>
           <tr>
+            <td>agent</td>
+            <td>general-purpose</td>
+            <td>当 <code class="inline">context: fork</code> 时，指定使用的子代理类型 (内置或自定义)</td>
+            <td><span class="hl-green">Explore</span>、<span class="hl-green">Plan</span>、自定义 agent</td>
+          </tr>
+          <tr>
             <td>model</td>
+            <td>&mdash;</td>
             <td>指定执行 Skill 时使用的模型</td>
             <td><span class="hl-cyan">sonnet / opus / haiku</span></td>
+          </tr>
+          <tr>
+            <td>hooks</td>
+            <td>&mdash;</td>
+            <td>限定作用于此 Skill 生命周期的钩子函数</td>
+            <td>Skill 激活/完成时触发自定义脚本</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top:20px;"><strong>调用控制矩阵</strong> &mdash; 两个字段组合决定 Skill 的可见性和触发方式：</p>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>配置</th>
+            <th>用户可调用</th>
+            <th>AI 可调用</th>
+            <th>上下文加载</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>(默认)</td>
+            <td class="hl-green">是</td>
+            <td class="hl-green">是</td>
+            <td>description 始终在上下文，正文按需加载</td>
+          </tr>
+          <tr>
+            <td>disable-model-invocation: true</td>
+            <td class="hl-green">是</td>
+            <td class="dim">否</td>
+            <td>description <strong>不在</strong>上下文，用户调用时才加载正文</td>
+          </tr>
+          <tr>
+            <td>user-invocable: false</td>
+            <td class="dim">否</td>
+            <td class="hl-green">是</td>
+            <td>description 始终在上下文，AI 激活时加载正文</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 
+  <!-- 字符串替换与动态注入 -->
+  <div class="card">
+    <div class="card-head">
+      <h3>参数替换与动态上下文注入</h3>
+      <span class="card-badge orange">ADVANCED</span>
+    </div>
+    <div class="card-body">
+      <p>Skill 正文支持字符串替换变量和 Shell 预处理命令，让 Skill 能够接收参数并动态注入运行时数据。</p>
+
+      <p><strong>字符串替换变量</strong></p>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>变量</th>
+            <th>说明</th>
+            <th>示例</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>$ARGUMENTS</td>
+            <td>调用 Skill 时传入的所有参数。若正文中未包含该变量，参数自动追加到末尾</td>
+            <td><code class="inline">/fix-issue 423</code> &rarr; <span class="hl-cyan">"423"</span></td>
+          </tr>
+          <tr>
+            <td>$ARGUMENTS[N] / $N</td>
+            <td>按 0-based 索引访问单个参数。<code class="inline">$0</code> 是 <code class="inline">$ARGUMENTS[0]</code> 的简写</td>
+            <td><code class="inline">/migrate $0=$1&rarr;$2</code></td>
+          </tr>
+          <tr>
+            <td>${CLAUDE_SESSION_ID}</td>
+            <td>当前会话 ID，适用于日志记录或创建会话特定文件</td>
+            <td><code class="inline">logs/${CLAUDE_SESSION_ID}.log</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top:16px;"><strong>动态上下文注入</strong> &mdash; <code class="inline">!`command`</code> 语法在 Skill 内容发送给 AI 之前执行 Shell 命令，将命令输出替换占位符：</p>
+
+      <div class="spec-block">
+        <div class="spec-head">
+          <div class="spec-dots"><i></i><i></i><i></i></div>
+          <span>!`command` 预处理示例</span>
+        </div>
+        <div class="spec-body"><span class="cm">---</span>
+<span class="kw">name</span>: pr-summary
+<span class="kw">description</span>: <span class="st">Summarize changes in a pull request</span>
+<span class="kw">context</span>: <span class="num">fork</span>
+<span class="kw">agent</span>: <span class="st">Explore</span>
+<span class="kw">allowed-tools</span>: <span class="st">Bash(gh *)</span>
+<span class="cm">---</span>
+
+<span class="cm">## Pull request context</span>
+- PR diff: <span class="fn">!`gh pr diff`</span>           <span class="cm"># 执行 gh CLI，输出替换此处</span>
+- PR comments: <span class="fn">!`gh pr view --comments`</span>
+- Changed files: <span class="fn">!`gh pr diff --name-only`</span>
+
+<span class="cm">## Your task</span>
+Summarize this pull request...</div>
+      </div>
+
+      <p style="font-size:0.82rem;color:var(--text2);margin-top:8px;">执行顺序：<code class="inline">!`command`</code> 先运行 &rarr; 输出替换占位符 &rarr; 渲染后的完整内容发送给 AI。这是预处理，AI 只看到最终结果。</p>
+    </div>
+  </div>
+
   <!-- Skill 配置与触发流程 -->
   <div class="card">
     <div class="card-head">
-      <h3>Skill 的配置与触发流程</h3>
+      <h3>Skill 的存储与触发流程</h3>
       <span class="card-badge cyan">FLOW</span>
     </div>
     <div class="card-body">
-      <p>理解 Skill 的触发流程有助于编写更精准的配置。以下是从创建到执行的完整链路：</p>
+      <p>理解 Skill 的存储层级和触发流程有助于编写更精准的配置。</p>
 
-      <p><strong>1. 配置 Skill 文件</strong></p>
-      <p>在对应目录创建 <code class="inline">SKILL.md</code>，填写 frontmatter 和指令正文。Skill 存放位置决定作用范围：</p>
+      <p><strong>1. 存储位置与作用范围</strong></p>
+      <p>存放位置决定谁可以使用该 Skill，同名时高优先级覆盖低优先级：</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>级别</th>
+            <th>路径</th>
+            <th>适用范围</th>
+            <th>优先级</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Enterprise</td>
+            <td class="dim">Managed Settings 配置</td>
+            <td>组织内所有用户</td>
+            <td class="hl-orange">最高</td>
+          </tr>
+          <tr>
+            <td>个人级</td>
+            <td><code class="inline">~/.claude/skills/&lt;name&gt;/SKILL.md</code></td>
+            <td>该用户所有项目</td>
+            <td class="hl">&darr;</td>
+          </tr>
+          <tr>
+            <td>项目级</td>
+            <td><code class="inline">.claude/skills/&lt;name&gt;/SKILL.md</code></td>
+            <td>仅当前项目 (可提交 Git)</td>
+            <td class="hl">&darr;</td>
+          </tr>
+          <tr>
+            <td>Plugin</td>
+            <td><code class="inline">&lt;plugin&gt;/skills/&lt;name&gt;/SKILL.md</code></td>
+            <td>插件启用的项目 (命名空间隔离)</td>
+            <td class="dim">不冲突</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:0.82rem;color:var(--text2);margin-top:8px;"><strong>Monorepo 自动发现</strong> &mdash; 编辑子目录文件时，Claude Code 会自动发现嵌套的 <code class="inline">.claude/skills/</code> 目录。例如编辑 <code class="inline">packages/frontend/</code> 中的文件时，也会加载 <code class="inline">packages/frontend/.claude/skills/</code> 中的 Skill。</p>
+
+      <p style="margin-top:16px;"><strong>2. 渐进式加载流程 (Progressive Disclosure)</strong></p>
+      <p>会话启动时，AI 仅加载所有 Skill 的 <code class="inline">name</code> + <code class="inline">description</code> (~100 tokens/Skill)。当用户请求匹配某 Skill 的描述时，AI 按需加载完整 SKILL.md 正文。<code class="inline">scripts/</code> 等资源文件仅在 Skill 指令引用时才读取。</p>
+
+      <p style="margin-top:16px;"><strong>3. 触发方式</strong></p>
       <ul>
-        <li><code class="inline">~/.claude/skills/</code> &mdash; 个人级：所有项目可用</li>
-        <li><code class="inline">.claude/skills/</code> &mdash; 项目级：仅当前项目，可提交到 Git</li>
-        <li>Plugin 的 <code class="inline">skills/</code> 目录 &mdash; 随插件安装分发</li>
-      </ul>
-
-      <p><strong>2. AI 加载流程</strong></p>
-      <p>会话启动时，AI 工具扫描所有 Skill 目录，将每个 Skill 的 <code class="inline">description</code> 加载到上下文中（仅描述，不含正文）。当用户请求与某个 Skill 的描述匹配时，AI 自动加载该 Skill 的完整内容并执行。</p>
-
-      <p><strong>3. 触发方式</strong></p>
-      <ul>
-        <li><strong>用户手动触发</strong> &mdash; 输入 <code class="inline">/skill-name args</code>，<code class="inline">args</code> 替换 <code class="inline">$ARGUMENTS</code></li>
-        <li><strong>AI 自动触发</strong> &mdash; 用户请求匹配 description 时，AI 自动激活对应 Skill</li>
+        <li><strong>用户手动触发</strong> &mdash; 输入 <code class="inline">/skill-name args</code>，<code class="inline">args</code> 替换 <code class="inline">$ARGUMENTS</code>，<code class="inline">argument-hint</code> 在自动补全时提供参数格式提示</li>
+        <li><strong>AI 自动触发</strong> &mdash; 用户请求匹配 description 关键词时，AI 自动激活对应 Skill</li>
         <li><strong>禁止自动触发</strong> &mdash; 设置 <code class="inline">disable-model-invocation: true</code>，仅限用户手动调用</li>
       </ul>
 
@@ -855,19 +1092,26 @@ Fix GitHub issue <span class="vr">$ARGUMENTS</span> following our standards.
 <span class="fn">用户输入</span>: <span class="vr">/fix-issue 423</span>
   &rarr; AI 加载 fix-issue/SKILL.md 完整内容
   &rarr; <span class="vr">$ARGUMENTS</span> 被替换为 <span class="st">"423"</span>
+  &rarr; <span class="fn">!`command`</span> 预处理执行
   &rarr; AI 按指令执行修复流程
 
-<span class="cm"># 场景 2：AI 自动匹配</span>
+<span class="cm"># 场景 2：AI 自动匹配 (渐进式加载)</span>
 <span class="fn">用户输入</span>: <span class="st">"帮我解释一下这段代码怎么工作的"</span>
-  &rarr; AI 匹配 explain-code 的 description
-  &rarr; 自动加载 Skill 正文
+  &rarr; AI 匹配 explain-code 的 description <span class="cm">(L1: ~100 tokens)</span>
+  &rarr; 自动加载 Skill 正文 <span class="cm">(L2: &lt;5000 tokens)</span>
+  &rarr; 按需读取 references/ 等文件 <span class="cm">(L3: 按引用)</span>
   &rarr; 按 Skill 规则输出 (类比 + 图表 + 步骤)
 
 <span class="cm"># 场景 3：fork 到子代理执行</span>
 <span class="fn">用户输入</span>: <span class="vr">/deep-research auth module</span>
-  &rarr; 创建独立子代理上下文
+  &rarr; 创建独立子代理上下文 <span class="cm">(context: fork)</span>
+  &rarr; agent 字段决定执行环境 <span class="cm">(Explore / Plan / 自定义)</span>
   &rarr; Skill 正文作为子代理任务
-  &rarr; 结果摘要返回主会话</div>
+  &rarr; 结果摘要返回主会话
+
+<span class="cm"># 场景 4：索引参数访问</span>
+<span class="fn">用户输入</span>: <span class="vr">/migrate-component SearchBar React Vue</span>
+  &rarr; <span class="vr">$0</span>=SearchBar  <span class="vr">$1</span>=React  <span class="vr">$2</span>=Vue</div>
       </div>
     </div>
   </div>
@@ -1047,15 +1291,17 @@ For examples, see <span class="vr">`examples.md`</span></div>
       <span class="card-badge cyan">OPEN STANDARD</span>
     </div>
     <div class="card-body">
-      <p><strong>Agent Skills</strong> 是由 Anthropic 发起的开放标准，定义了 AI 工具能力扩展的通用规范。核心理念是：同一个 Skill 文件应当能跨工具使用，无需修改。</p>
+      <p><strong>Agent Skills</strong> 是由 Anthropic 发起并于 2025 年 12 月 18 日发布的开放标准 (<a href="https://agentskills.io" style="color:var(--cyan);text-decoration:none;">agentskills.io</a>)，定义了 AI 工具能力扩展的通用规范。核心理念是：同一个 Skill 文件应当能跨工具使用，无需修改。</p>
       <ul>
-        <li><strong>标准规范</strong> &mdash; 统一的 SKILL.md 格式、frontmatter 字段、目录结构</li>
-        <li><strong>跨工具兼容</strong> &mdash; Claude Code、OpenCode、Gemini CLI、GitHub Copilot CLI、Cursor、VS Code 等均已支持或正在接入</li>
+        <li><strong>标准规范</strong> &mdash; 统一的 SKILL.md 格式 (YAML frontmatter + Markdown body)，标准字段 (<code class="inline">name</code> / <code class="inline">description</code> / <code class="inline">license</code> / <code class="inline">compatibility</code> / <code class="inline">metadata</code> / <code class="inline">allowed-tools</code>)，标准目录结构 (<code class="inline">scripts/</code> / <code class="inline">references/</code> / <code class="inline">assets/</code>)</li>
+        <li><strong>跨工具兼容</strong> &mdash; Claude Code (发起者)、OpenAI Codex (API)、OpenCode、Gemini CLI、GitHub Copilot CLI、Kilo Code、Cursor 等均已支持或正在接入</li>
         <li><strong>社区生态</strong> &mdash; 社区市场已索引超过 185,000 个公开 Skills，涵盖前端设计、测试、部署、文档生成等各个领域</li>
         <li><strong>分发机制</strong> &mdash; 通过插件系统或直接目录分享，团队可在 Git 仓库中共享 Skills</li>
+        <li><strong>渐进式加载</strong> &mdash; 三层上下文管理 (元数据 ~100 tokens &rarr; 指令 &lt;5000 tokens &rarr; 资源按需)，优化上下文窗口利用率</li>
+        <li><strong>验证工具</strong> &mdash; 官方提供 <a href="https://github.com/agentskills/agentskills/tree/main/skills-ref" style="color:var(--cyan);text-decoration:none;">skills-ref</a> 参考库，<code class="inline">skills-ref validate ./my-skill</code> 一键检查 frontmatter 合规性</li>
       </ul>
 
-      <p>类比理解：Agent Skills 之于 AI CLI 工具，就像 <strong>npm 包</strong>之于 Node.js &mdash; 一个可复用、可分享、跨平台的能力单元。</p>
+      <p>类比理解：Agent Skills 之于 AI CLI 工具，就像 <strong>npm 包</strong>之于 Node.js &mdash; 一个可复用、可分享、跨平台的能力单元。各工具在标准基础上自行扩展特有字段 (如 Claude Code 的 <code class="inline">context: fork</code>、<code class="inline">hooks</code>)，但标准字段保持互通。</p>
     </div>
   </div>
 
@@ -1071,9 +1317,9 @@ For examples, see <span class="vr">`examples.md`</span></div>
           <tr>
             <th>维度</th>
             <th>Claude Code</th>
+            <th>OpenAI Codex</th>
             <th>OpenCode</th>
             <th>Gemini CLI</th>
-            <th>Copilot CLI</th>
             <th>Cursor</th>
           </tr>
         </thead>
@@ -1081,15 +1327,15 @@ For examples, see <span class="vr">`examples.md`</span></div>
           <tr>
             <td>存储位置</td>
             <td class="hl"><code class="inline">.claude/skills/</code></td>
+            <td class="hl-purple">API 上传 (zip/文件)</td>
             <td class="hl-green"><code class="inline">.opencode/skills/</code></td>
             <td class="hl-orange"><code class="inline">.gemini/skills/</code></td>
-            <td class="hl-cyan"><code class="inline">.copilot/skills/</code></td>
             <td class="dim"><code class="inline">.cursor/rules/</code></td>
           </tr>
           <tr>
             <td>文件格式</td>
             <td>SKILL.md</td>
-            <td>SKILL.md</td>
+            <td>SKILL.md / skill.md</td>
             <td>SKILL.md</td>
             <td>SKILL.md</td>
             <td>.mdc (Rule 文件)</td>
@@ -1097,17 +1343,17 @@ For examples, see <span class="vr">`examples.md`</span></div>
           <tr>
             <td>Agent Skills 标准</td>
             <td class="hl">完整支持 (发起者)</td>
+            <td class="hl-purple">支持 (API 集成)</td>
             <td class="hl-green">完整支持</td>
             <td class="hl-orange">支持</td>
-            <td class="hl-cyan">支持 (预览)</td>
             <td class="dim">部分兼容</td>
           </tr>
           <tr>
             <td>自动匹配</td>
             <td class="hl">按描述自动触发</td>
+            <td class="hl-purple">按描述路由</td>
             <td class="hl-green">按描述自动触发</td>
             <td class="hl-orange">按描述自动触发</td>
-            <td class="hl-cyan">按描述触发</td>
             <td class="dim">按 glob 匹配文件</td>
           </tr>
           <tr>
@@ -1129,10 +1375,18 @@ For examples, see <span class="vr">`examples.md`</span></div>
           <tr>
             <td>社区市场</td>
             <td class="hl">Plugin 市场 + 开放索引</td>
+            <td class="hl-purple">API Skills 管理</td>
             <td class="hl-green">共享生态</td>
             <td class="hl-orange">共享生态</td>
-            <td class="hl-cyan">开发中</td>
             <td class="dim">独立生态</td>
+          </tr>
+          <tr>
+            <td>扩展字段</td>
+            <td class="hl">context, agent, hooks, model, argument-hint</td>
+            <td class="hl-purple">API 级版本管理</td>
+            <td class="hl-green">兼容 .claude/ 路径</td>
+            <td class="hl-orange">标准字段</td>
+            <td class="dim">glob, alwaysApply</td>
           </tr>
         </tbody>
       </table>
@@ -1140,8 +1394,8 @@ For examples, see <span class="vr">`examples.md`</span></div>
   </div>
 
   <div class="insight">
-    <h4>关于 Cursor</h4>
-    <p>Cursor 使用 <code class="inline">.cursor/rules/</code> 中的 Rule 文件实现类似效果，但规范与 Agent Skills 标准有差异（使用 .mdc 格式，按 glob 模式匹配文件而非按描述自动触发）。随着 Agent Skills 标准的广泛采纳，Cursor 也在逐步增加兼容性。</p>
+    <h4>跨工具兼容性说明</h4>
+    <p><strong>OpenAI Codex</strong> 通过 <code class="inline">POST /v1/skills</code> API 上传 Skill (zip 包或多文件)，frontmatter 的 <code class="inline">name</code> 和 <code class="inline">description</code> 用于 Skill 发现和路由，与 Agent Skills 标准完全一致。<strong>OpenCode</strong> 同时扫描 <code class="inline">.opencode/skills/</code>、<code class="inline">.claude/skills/</code> 和 <code class="inline">.agents/skills/</code> 三个路径，最大化兼容性。<strong>Cursor</strong> 使用 <code class="inline">.cursor/rules/</code> 中的 .mdc Rule 文件，按 glob 模式匹配而非按描述自动触发，与 Agent Skills 标准有差异，但正在逐步增加兼容性。</p>
   </div>
 </div>
 

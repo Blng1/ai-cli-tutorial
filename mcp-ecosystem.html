@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MCP 生态与推荐 - AI CLI 工具通识教学</title>
+<title>MCP 生态与推荐 - AI CLI 工具分享</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600&family=DM+Serif+Display&display=swap');
@@ -35,6 +35,7 @@
     background: var(--bg);
     color: var(--text);
     line-height: 1.75;
+    padding-left: 240px;
   }
 
   /* ===== Hero ===== */
@@ -496,6 +497,7 @@
 </style>
 </head>
 <body>
+<script src="sidebar.js"></script>
 
 <!-- ========== TOP NAV ========== -->
 <nav style="display:flex;justify-content:space-between;align-items:center;padding:12px 28px;border-bottom:1px solid #192240;background:#0b1120;font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
@@ -574,7 +576,7 @@ flowchart LR
             <th>Claude Code</th>
             <th>OpenCode</th>
             <th>Cursor</th>
-            <th>GLM Plan</th>
+            <th>Gemini CLI</th>
           </tr>
         </thead>
         <tbody>
@@ -583,28 +585,28 @@ flowchart LR
             <td class="highlight">协议创造者，最深集成</td>
             <td class="highlight">完整支持</td>
             <td class="highlight">完整支持</td>
-            <td>MCP-Atlas (基础)</td>
+            <td class="highlight">完整支持 + Extensions 生态</td>
           </tr>
           <tr>
             <td>配置方式</td>
             <td class="cell-mono">.claude/settings.json</td>
             <td class="cell-mono">.opencode/config</td>
             <td>Settings &gt; MCP</td>
-            <td>配置文件</td>
+            <td class="cell-mono">settings.json mcpServers</td>
           </tr>
           <tr>
             <td>远程 MCP</td>
             <td class="highlight">支持</td>
             <td>支持</td>
             <td>支持</td>
-            <td class="dim">有限</td>
+            <td class="highlight">支持（SSE / HTTP）</td>
           </tr>
           <tr>
             <td>本地 MCP</td>
             <td>支持</td>
             <td>支持</td>
             <td>支持</td>
-            <td>支持</td>
+            <td>支持（Stdio）</td>
           </tr>
         </tbody>
       </table>

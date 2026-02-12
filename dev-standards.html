@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>06 Vibe Coding 主流规范 - AI CLI 工具通识教学</title>
+<title>06 Vibe Coding 主流规范 - AI CLI 工具分享</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600&family=DM+Serif+Display&display=swap');
@@ -35,6 +35,7 @@
     background: var(--bg);
     color: var(--text);
     line-height: 1.75;
+    padding-left: 240px;
   }
 
   /* ===== Hero ===== */
@@ -562,6 +563,7 @@
 </style>
 </head>
 <body>
+<script src="sidebar.js"></script>
 
 <!-- ========== TOP NAV ========== -->
 <nav style="display:flex;justify-content:space-between;align-items:center;padding:12px 28px;border-bottom:1px solid #192240;background:#0b1120;font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
@@ -1439,6 +1441,120 @@ flowchart LR
 
   <div class="card">
     <div class="card-head">
+      <h3>Skill (Command) 编写规范</h3>
+      <span class="card-badge">SKILL</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">Skill = Command：.claude/commands/*.md 中的文件既是 Command 也是 Skill，用户通过 /skill-name 触发</p>
+      <div class="op-grid" style="margin-bottom: 20px;">
+        <div class="op-card cat-blue">
+          <h4>Skill 是什么</h4>
+          <p>放在 <code style="color:var(--cyan);font-size:0.78rem;">.claude/commands/</code> 目录下的 Markdown 文件。每个文件就是一个可通过 <code style="color:var(--cyan);font-size:0.78rem;">/command-name</code> 触发的技能。文件名即命令名（去掉 .md 后缀）。</p>
+        </div>
+        <div class="op-card cat-purple">
+          <h4>Skill vs Agent 区别</h4>
+          <p>Skill 在主会话（或 fork 子会话）中运行，适合固定步骤流程。Agent 在独立上下文中自治运行，适合需要阶段隔离的场景。大多数情况下 Skill 就够用。</p>
+        </div>
+        <div class="op-card cat-cyan">
+          <h4>Skill 编写四要素</h4>
+          <p><strong>Frontmatter</strong>（可选元数据）+ <strong>执行步骤</strong>（有序动作）+ <strong>输出模板</strong>（结构化格式）+ <strong>约束规则</strong>（边界声明）。缺一则 AI 执行时容易偏离。</p>
+        </div>
+      </div>
+
+      <div class="card-body" style="padding: 0; overflow-x: auto;">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>规范</th>
+              <th>说明</th>
+              <th>示例</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Frontmatter</td>
+              <td>YAML 格式声明元数据，如 <code style="color:var(--cyan);font-size:0.78rem;">context: fork</code> 让 Skill 在子会话中运行，不消耗主会话上下文</td>
+              <td class="dim"><code style="color:var(--text3);font-size:0.78rem;">---<br/>context: fork<br/>---</code></td>
+            </tr>
+            <tr>
+              <td>$ARGUMENTS</td>
+              <td>接收用户传入参数。用 <code style="color:var(--cyan);font-size:0.78rem;">$ARGUMENTS</code> 占位，调用时 <code style="color:var(--cyan);font-size:0.78rem;">/skill-name 参数内容</code></td>
+              <td class="dim"><code style="color:var(--text3);font-size:0.78rem;">/speckit-specify 用户登录功能</code></td>
+            </tr>
+            <tr>
+              <td>执行步骤</td>
+              <td class="highlight">有编号的步骤列表，AI 按顺序执行。步骤越具体，AI 越不容易跳步</td>
+              <td class="dim">1. 读取 → 2. 分析 → 3. 生成 → 4. 校验</td>
+            </tr>
+            <tr>
+              <td>输出模板</td>
+              <td>定义输出格式和结构。AI 按模板填充，避免格式随意</td>
+              <td class="dim">Markdown 模板 / JSON Schema / 表格格式</td>
+            </tr>
+            <tr>
+              <td>约束规则</td>
+              <td class="warn">用编号列表声明禁止项和强制要求。没有约束 = AI 自由发挥</td>
+              <td class="dim">1. 禁止... 2. 必须... 3. 限制...</td>
+            </tr>
+            <tr>
+              <td>命名约定</td>
+              <td>文件名用 kebab-case，名称反映动作。<code style="color:var(--cyan);font-size:0.78rem;">spec-writer</code> 而非 <code style="color:var(--text3);font-size:0.78rem;">write-spec</code></td>
+              <td class="dim">{动词}-{对象}.md 或 {对象}-{动作}.md</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="spec-block" style="margin-top: 20px;">
+        <div class="spec-block-head">
+          <span>.claude/commands/review.md — 完整 Skill 示例</span>
+          <span class="spec-lang">SKILL</span>
+        </div>
+        <pre><span class="comment">---</span>
+<span class="key">context</span>: <span class="num">fork</span>        <span class="comment"># 在子会话中运行，不消耗主会话上下文</span>
+<span class="comment">---</span>
+
+<span class="heading"># Code Review</span>
+
+审查当前分支的代码变更，输出结构化报告。
+
+<span class="heading">## 执行步骤</span>
+
+<span class="num">1.</span> 运行 <span class="string">git diff</span> 获取待审查的变更
+<span class="num">2.</span> 读取变更文件的完整上下文（上下各 50 行）
+<span class="num">3.</span> 按四个维度逐一审查：
+   - <span class="keyword">正确性</span>：逻辑缺陷、边界条件、并发风险
+   - <span class="keyword">安全性</span>：注入、认证绕过、敏感数据泄露
+   - <span class="keyword">性能</span>：算法复杂度、N+1 查询、资源泄漏
+   - <span class="keyword">可维护性</span>：命名、模块边界、重复代码
+<span class="num">4.</span> 输出结构化报告
+
+<span class="heading">## 输出格式</span>
+
+每条问题按以下格式输出：
+
+<span class="value">**[{级别}] {问题标题}**</span>
+<span class="value">- 文件：{file_path}:{line}</span>
+<span class="value">- 风险：{风险描述}</span>
+<span class="value">- 建议：{修复方案}</span>
+
+<span class="heading">## 级别定义</span>
+
+- <span class="string">Blocker</span> &mdash; 必须修复：安全高危、数据破坏、核心逻辑错误
+- <span class="string">Major</span> &mdash; 应在当前迭代修复：性能回退、重要边界遗漏
+- <span class="string">Minor</span> &mdash; 可后续优化：命名、风格、轻微重构
+
+<span class="heading">## 约束</span>
+
+<span class="value">1.</span> 只报告变更代码中的问题，不审查未改动部分
+<span class="value">2.</span> 每条问题必须附文件路径和行号
+<span class="value">3.</span> Blocker 级别问题必须给出修复代码示例</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
       <h3>配置清单</h3>
       <span class="card-badge cyan">CHECKLIST</span>
     </div>
@@ -1454,11 +1570,11 @@ flowchart LR
           </ul>
         </div>
         <div class="op-card cat-purple">
-          <h4>Commands</h4>
+          <h4>Skills (Commands)</h4>
           <ul class="op-list">
             <li><span class="op-name">speckit-specify</span><span class="op-desc">结构化需求 + Plan + Tasks</span><span class="freq-high">&#9733;&#9733;&#9733;</span></li>
             <li><span class="op-name">schema-gen</span><span class="op-desc">从 spec 生成三层 Schema</span><span class="freq-high">&#9733;&#9733;&#9733;</span></li>
-            <li><span class="op-name">review</span><span class="op-desc">fork 子代理结构化审查</span><span class="freq-mid">&#9733;&#9733;</span></li>
+            <li><span class="op-name">review</span><span class="op-desc">fork 子会话结构化审查</span><span class="freq-mid">&#9733;&#9733;</span></li>
           </ul>
         </div>
         <div class="op-card cat-green">

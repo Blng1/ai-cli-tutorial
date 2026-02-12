@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>07 进阶实战 - AI CLI 工具通识教学</title>
+<title>07 进阶实战 - AI CLI 工具分享</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600&family=DM+Serif+Display&display=swap');
@@ -36,6 +36,7 @@
     background: var(--bg);
     color: var(--text);
     line-height: 1.75;
+    padding-left: 240px;
   }
 
   /* ===== Hero ===== */
@@ -703,6 +704,353 @@
     color: var(--cyan);
   }
 
+  /* ===== Pricing Grid ===== */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .pricing-card {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+    transition: border-color 0.3s;
+  }
+
+  .pricing-card:hover { border-color: var(--border-focus); }
+
+  .pricing-card .model-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .pricing-card .price-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(25,34,64,0.4);
+  }
+
+  .pricing-card .price-row:last-child { border-bottom: none; }
+
+  .pricing-card .price-label { color: var(--text3); }
+  .pricing-card .price-value { color: var(--cyan); font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+
+  .pricing-card .model-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-top: 10px;
+    display: inline-block;
+  }
+
+  .pricing-card .model-tag.tag-budget { color: var(--green); background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); }
+  .pricing-card .model-tag.tag-balanced { color: var(--blue); background: rgba(74,158,255,0.08); border: 1px solid rgba(74,158,255,0.2); }
+  .pricing-card .model-tag.tag-premium { color: var(--purple); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.2); }
+  .pricing-card .model-tag.tag-free { color: var(--orange); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); }
+
+  /* ===== Cost Formula ===== */
+  .cost-formula {
+    background: linear-gradient(135deg, rgba(74,158,255,0.06), rgba(34,211,238,0.04));
+    border: 1px solid rgba(74,158,255,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .cost-formula .formula {
+    font-size: 0.92rem;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .cost-formula .formula-note {
+    font-size: 0.72rem;
+    color: var(--text2);
+  }
+
+  .cost-formula .formula .hl-input { color: var(--cyan); }
+  .cost-formula .formula .hl-output { color: var(--orange); }
+  .cost-formula .formula .hl-op { color: var(--text3); }
+
+  /* ===== Cost Tier / Pyramid ===== */
+  .cost-pyramid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 20px 0;
+  }
+
+  .pyramid-tier {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card-alt);
+    transition: border-color 0.3s;
+    width: 100%;
+  }
+
+  .pyramid-tier:hover { border-color: var(--border-focus); }
+
+  .pyramid-tier .tier-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 700;
+    min-width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .pyramid-tier .tier-name {
+    font-weight: 600;
+    font-size: 0.84rem;
+    color: var(--text);
+    min-width: 130px;
+  }
+
+  .pyramid-tier .tier-desc {
+    font-size: 0.76rem;
+    color: var(--text2);
+    flex: 1;
+  }
+
+  .pyramid-tier .tier-save {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .tier-green .tier-num { color: var(--green); background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.25); }
+  .tier-green .tier-save { color: var(--green); }
+  .tier-blue .tier-num { color: var(--blue); background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); }
+  .tier-blue .tier-save { color: var(--blue); }
+  .tier-cyan .tier-num { color: var(--cyan); background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.25); }
+  .tier-cyan .tier-save { color: var(--cyan); }
+  .tier-purple .tier-num { color: var(--purple); background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.25); }
+  .tier-purple .tier-save { color: var(--purple); }
+  .tier-orange .tier-num { color: var(--orange); background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25); }
+  .tier-orange .tier-save { color: var(--orange); }
+
+  /* ===== Savings Meter ===== */
+  .savings-meter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .savings-meter .meter-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(25,34,64,0.6);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .savings-meter .meter-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .savings-meter .meter-fill.fill-green { background: linear-gradient(90deg, var(--green), rgba(52,211,153,0.5)); }
+  .savings-meter .meter-fill.fill-blue { background: linear-gradient(90deg, var(--blue), rgba(74,158,255,0.5)); }
+  .savings-meter .meter-fill.fill-purple { background: linear-gradient(90deg, var(--purple), rgba(167,139,250,0.5)); }
+  .savings-meter .meter-fill.fill-cyan { background: linear-gradient(90deg, var(--cyan), rgba(34,211,238,0.5)); }
+  .savings-meter .meter-fill.fill-orange { background: linear-gradient(90deg, var(--orange), rgba(251,191,36,0.5)); }
+
+  .savings-meter .meter-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    min-width: 42px;
+    text-align: right;
+  }
+
+  /* ===== Monitor Block ===== */
+  .monitor-block {
+    background: #050810;
+    border: 1px solid rgba(25,34,64,0.8);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .monitor-block .monitor-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(15,22,40,0.8);
+    border-bottom: 1px solid rgba(25,34,64,0.6);
+  }
+
+  .monitor-block .monitor-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .monitor-block .monitor-dot.red { background: #f87171; }
+  .monitor-block .monitor-dot.yellow { background: #fbbf24; }
+  .monitor-block .monitor-dot.green { background: #34d399; }
+
+  .monitor-block .monitor-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    margin-left: 4px;
+  }
+
+  .monitor-block pre {
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    line-height: 1.7;
+    color: var(--text2);
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .monitor-block pre .cmd { color: var(--green); }
+  .monitor-block pre .path { color: var(--blue); }
+  .monitor-block pre .val { color: var(--cyan); }
+  .monitor-block pre .hl { color: var(--orange); font-weight: 600; }
+  .monitor-block pre .dim { color: var(--text3); }
+
+  /* ===== Cross-Tool Tabs ===== */
+  .cross-tool-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--bg-card-alt);
+    border-radius: 8px 8px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    overflow-x: auto;
+  }
+
+  .cross-tool-tab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    padding: 10px 16px;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .cross-tool-tab:hover { color: var(--text2); }
+  .cross-tool-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); background: rgba(34,211,238,0.04); }
+
+  .cross-tool-panels {
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+  }
+
+  .cross-tool-panel {
+    display: none;
+    padding: 0;
+  }
+
+  .cross-tool-panel.active { display: block; }
+
+  /* ===== Tip Callout ===== */
+  .tip-callout {
+    background: rgba(52,211,153,0.04);
+    border: 1px solid rgba(52,211,153,0.15);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-size: 0.78rem;
+    color: var(--text2);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .tip-callout .tip-icon {
+    color: var(--green);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .tip-callout.tip-warn {
+    background: rgba(251,191,36,0.04);
+    border-color: rgba(251,191,36,0.15);
+  }
+
+  .tip-callout.tip-warn .tip-icon { color: var(--orange); }
+
+  /* ===== Billing Toggle ===== */
+  .billing-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+
+  .billing-col {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+
+  .billing-col h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .billing-col h5.sub-label { color: var(--blue); }
+  .billing-col h5.api-label { color: var(--green); }
+
+  .billing-col ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .billing-col li {
+    font-size: 0.76rem;
+    color: var(--text2);
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(25,34,64,0.3);
+  }
+
+  .billing-col li:last-child { border-bottom: none; }
+
   /* ===== Responsive ===== */
   @media (max-width: 768px) {
     .hero h1 { font-size: 2rem; }
@@ -721,10 +1069,21 @@
     .repo-card-body { padding: 16px; }
     .repo-stats { gap: 5px; }
     .repo-agents { gap: 4px; }
+    .pricing-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .pricing-card { padding: 12px; }
+    .pricing-card .model-name { font-size: 0.72rem; }
+    .cost-pyramid { gap: 4px; }
+    .pyramid-tier { padding: 10px 14px; gap: 10px; flex-wrap: wrap; }
+    .pyramid-tier .tier-name { min-width: auto; font-size: 0.78rem; }
+    .pyramid-tier .tier-desc { min-width: 100%; order: 3; margin-top: 4px; font-size: 0.72rem; }
+    .billing-split { grid-template-columns: 1fr; }
+    .cross-tool-tab { padding: 8px 12px; font-size: 0.62rem; }
+    .monitor-block pre { font-size: 0.68rem; padding: 12px 14px; }
   }
 </style>
 </head>
 <body>
+<script src="sidebar.js"></script>
 
 <!-- ========== NAV ========== -->
 <nav style="display:flex;justify-content:space-between;align-items:center;padding:12px 28px;border-bottom:1px solid #192240;background:#0b1120;font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
@@ -784,10 +1143,10 @@
             </tr>
             <tr>
               <td>长上下文</td>
-              <td>200K</td>
-              <td>128K</td>
+              <td>200K / 1M</td>
+              <td>400K / 1M</td>
               <td class="highlight">1M</td>
-              <td>200K</td>
+              <td>128K~200K</td>
             </tr>
             <tr>
               <td>前端 / UI</td>
@@ -1187,322 +1546,783 @@ server.setRequestHandler(<span class="str">"tools/call"</span>, <span class="key
     <span class="sn">03</span>
     <span class="st">成本控制与 Token 优化</span>
   </div>
-  <p class="sd">Token 成本 = 输入 Token + 输出 Token（输出单价约为输入的 5 倍）。通过 Skills 精简、子 Agent 上下文隔离、智能模型路由三大维度组合优化，可实现 60-80% 的成本降幅。</p>
+  <p class="sd">API 按量计费时代，成本优化是可持续使用 AI 编程工具的核心技能。通过五大维度组合优化 &mdash;&mdash; 输出控制、Context 裁剪、子 Agent 隔离、模型路由、Prompt Caching &mdash;&mdash; 可实现 60-90% 的成本降幅。以下策略适用于 Claude Code / OpenCode / Cursor / Gemini CLI 等主流工具。</p>
 
-  <!-- ── 区块 1: Token 优化策略总览表 ── -->
+  <!-- ── 区块 1: 成本公式 + API 定价速查 ── -->
   <div class="card">
     <div class="card-head">
-      <h3>Token 优化策略总览</h3>
-      <span class="card-badge">STRATEGY</span>
+      <h3>成本公式与 API 定价速查</h3>
+      <span class="card-badge">PRICING</span>
     </div>
     <div class="card-body">
+      <div class="cost-formula">
+        <div class="formula">
+          <span class="hl-op">总成本 = </span>
+          <span class="hl-input">输入 Token &times; 输入单价</span>
+          <span class="hl-op"> + </span>
+          <span class="hl-output">输出 Token &times; 输出单价</span>
+        </div>
+        <div class="formula-note">输出单价通常是输入的 3~5 倍 &mdash;&mdash; 控制输出量是最高杠杆的优化手段</div>
+      </div>
+
+      <h4 style="font-size:0.84rem;margin-bottom:12px;color:var(--text);">2026 主流模型 API 定价（/1M tokens）</h4>
+
       <div style="overflow-x:auto;">
         <table class="compare-table">
           <thead>
             <tr>
-              <th>维度</th>
-              <th>策略</th>
-              <th>说明</th>
-              <th>节省效果</th>
+              <th>模型</th>
+              <th>输入</th>
+              <th>输出</th>
+              <th>Cache 读取</th>
+              <th>上下文</th>
+              <th>适用场景</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><span style="color:var(--cyan);font-weight:600;">Skills 精简</span></td>
-              <td>MCP Server 裁剪</td>
-              <td>每个启用的 MCP 都注入系统提示词，即使从未调用也占 Token</td>
-              <td class="highlight">高</td>
+              <td>Claude Haiku 3.5</td>
+              <td>$0.80</td>
+              <td>$4</td>
+              <td>$0.08</td>
+              <td>200K</td>
+              <td class="dim">搜索 / 格式化 / 子 Agent</td>
             </tr>
             <tr>
-              <td><span style="color:var(--cyan);font-weight:600;">Skills 精简</span></td>
-              <td>CLAUDE.md 分层</td>
-              <td>根级精简 + 模块级详尽，模型只加载工作目录链上的文件</td>
-              <td class="highlight">中</td>
+              <td>Claude Sonnet 4</td>
+              <td>$3</td>
+              <td>$15</td>
+              <td>$0.30</td>
+              <td>200K</td>
+              <td class="dim">日常编码（性价比最优）</td>
             </tr>
             <tr>
-              <td><span style="color:var(--cyan);font-weight:600;">Skills 精简</span></td>
-              <td>/compact 压缩</td>
-              <td>窗口占用 80% 时手动压缩或新建会话</td>
-              <td class="highlight">高</td>
+              <td>Claude Opus 4</td>
+              <td>$15</td>
+              <td>$75</td>
+              <td>$1.50</td>
+              <td>200K</td>
+              <td class="dim">架构设计 / 复杂重构</td>
             </tr>
             <tr>
-              <td><span style="color:var(--purple);font-weight:600;">子 Agent 隔离</span></td>
-              <td>子 Agent 委派</td>
-              <td>子 Agent 只接收精确任务描述，不继承主会话上下文</td>
-              <td class="highlight">高</td>
+              <td>GPT-4.1</td>
+              <td>$2</td>
+              <td>$8</td>
+              <td>$0.50</td>
+              <td>1M</td>
+              <td class="dim">通用替代 / 长上下文</td>
             </tr>
             <tr>
-              <td><span style="color:var(--purple);font-weight:600;">子 Agent 隔离</span></td>
-              <td>精确调用描述</td>
-              <td>精确描述比模糊多次重试节省 3-5x Token</td>
-              <td class="highlight">高</td>
+              <td>GPT-4.1 mini</td>
+              <td>$0.40</td>
+              <td>$1.60</td>
+              <td>$0.10</td>
+              <td>1M</td>
+              <td class="dim">高频低成本任务</td>
             </tr>
             <tr>
-              <td><span style="color:var(--purple);font-weight:600;">子 Agent 隔离</span></td>
-              <td>子 Agent 模型降级</td>
-              <td>环境变量 / settings.json 指定 Haiku/Sonnet</td>
-              <td class="highlight">高</td>
+              <td>Gemini 2.5 Pro</td>
+              <td>$1.25~2.50</td>
+              <td>$10~15</td>
+              <td>&mdash;</td>
+              <td>1M</td>
+              <td class="dim">长上下文 / 规划</td>
             </tr>
             <tr>
-              <td><span style="color:var(--green);font-weight:600;">模型路由</span></td>
-              <td>任务复杂度路由</td>
-              <td>Sonnet 日常编码 + Opus 架构设计，按需选模型</td>
-              <td class="highlight">高</td>
+              <td>Gemini 2.5 Flash</td>
+              <td>$0.15~0.60</td>
+              <td>$0.60~3.50</td>
+              <td>&mdash;</td>
+              <td>1M</td>
+              <td class="dim">高频低成本（有免费额度）</td>
+            </tr>
+            <tr style="border-top:2px solid var(--border);">
+              <td>GLM-4.7</td>
+              <td>$0.60</td>
+              <td>$2.20</td>
+              <td>$0.11</td>
+              <td>200K</td>
+              <td class="dim">国产旗舰 / 接入 Claude Code</td>
             </tr>
             <tr>
-              <td><span style="color:var(--green);font-weight:600;">模型路由</span></td>
-              <td>输出 Token 控制</td>
-              <td>Prompt 中指定"简洁回答"，输出成本是输入 5x</td>
-              <td class="highlight">高</td>
+              <td>GLM-4.5-Air</td>
+              <td>$0.20</td>
+              <td>$1.10</td>
+              <td>$0.03</td>
+              <td>128K</td>
+              <td class="dim">轻量子 Agent / 高频任务</td>
             </tr>
             <tr>
-              <td><span style="color:var(--green);font-weight:600;">模型路由</span></td>
-              <td>上下文压缩</td>
-              <td>长文档先摘要再注入，节省 90% 输入 Token</td>
-              <td class="highlight">中</td>
-            </tr>
-            <tr>
-              <td><span style="color:var(--green);font-weight:600;">模型路由</span></td>
-              <td>BYOK + OpenCode</td>
-              <td>自带 API Key，利用 Prompt Cache 降低重复计算</td>
-              <td class="highlight">高</td>
+              <td>GLM-4.7-Flash</td>
+              <td class="highlight" colspan="3">免费</td>
+              <td>200K</td>
+              <td class="dim">零成本入门（有并发限制）</td>
             </tr>
           </tbody>
         </table>
       </div>
-    </div>
-  </div>
 
-  <!-- ── 区块 2: 三大维度详解 ── -->
-  <div class="card">
-    <div class="card-head">
-      <h3>三大优化维度详解</h3>
-      <span class="card-badge">DEEP DIVE</span>
-    </div>
-    <div class="card-body">
-      <div class="op-grid">
-        <div class="op-card cat-cyan">
-          <h4>Skills 精简</h4>
-          <ul class="op-list">
-            <li>
-              <span class="freq-high">&#9733;&#9733;&#9733;</span>
-              <div><span class="op-name">MCP Server 裁剪</span><br><span class="op-desc">每个启用的 MCP 都向系统提示词注入工具描述，即使从未调用也持续消耗 Token。只保留当前任务需要的 MCP</span></div>
-            </li>
-            <li>
-              <span class="freq-high">&#9733;&#9733;&#9733;</span>
-              <div><span class="op-name">CLAUDE.md 分层管理</span><br><span class="op-desc">根级文件精简（&lt;50 行），模块级文件放详细规范。模型只加载当前工作目录到根目录链上的 CLAUDE.md</span></div>
-            </li>
-            <li>
-              <span class="freq-mid">&#9733;&#9733;</span>
-              <div><span class="op-name">Skills 按需加载</span><br><span class="op-desc">高频 Skill 保持启用，低频 Skill 通过 /slash-command 按需调用，避免系统提示词膨胀</span></div>
-            </li>
-            <li>
-              <span class="freq-mid">&#9733;&#9733;</span>
-              <div><span class="op-name">目录级屏蔽</span><br><span class="op-desc">CLAUDE.md 中明确禁止扫描 node_modules / dist / .git 等目录，避免无意义的上下文索引</span></div>
-            </li>
-            <li>
-              <span class="freq-high">&#9733;&#9733;&#9733;</span>
-              <div><span class="op-name">/compact + 80% 规则</span><br><span class="op-desc">上下文窗口占用超过 80% 时执行 /compact 压缩或新建会话，防止累积 Token 爆炸</span></div>
-            </li>
+      <div class="tip-callout" style="margin-top:16px;">
+        <span class="tip-icon">&#9432;</span>
+        <span>定价随时变动，以各厂商官网为准。Claude 系列来自 <strong>Anthropic</strong>，GPT 来自 <strong>OpenAI</strong>，Gemini 来自 <strong>Google AI Studio</strong>，GLM 来自 <strong>Z.ai</strong>（docs.z.ai/guides/overview/pricing）。GLM-4.7-Flash 和 Gemini 2.5 Flash 均有免费额度，零成本入门首选。</span>
+      </div>
+
+      <div class="billing-split">
+        <div class="billing-col">
+          <h5 class="sub-label">&#9670; 订阅制（固定月费）</h5>
+          <ul>
+            <li>Claude Pro $20 / Max $100-200 / Team</li>
+            <li>Cursor Pro $20 / Business $40</li>
+            <li>GitHub Copilot $10-19</li>
+            <li>GLM Coding Plan &yen;20/月起（Lite &yen;60/季 / Pro &yen;300/季 / Max &yen;600/季）</li>
+            <li><strong style="color:var(--text);">优化收益</strong>：不降账单，但延长额度可用时长</li>
+            <li><strong style="color:var(--text);">适合</strong>：日常开发者，预算可预测</li>
           </ul>
         </div>
-        <div class="op-card cat-purple">
-          <h4>子 Agent 上下文隔离</h4>
-          <ul class="op-list">
-            <li>
-              <span class="freq-high">&#9733;&#9733;&#9733;</span>
-              <div><span class="op-name">主控编排 + 子 Agent 执行</span><br><span class="op-desc">主会话保持干净的编排角色，具体实现委派给子 Agent，主上下文不膨胀</span></div>
-            </li>
-            <li>
-              <span class="freq-high">&#9733;&#9733;&#9733;</span>
-              <div><span class="op-name">上下文不继承</span><br><span class="op-desc">子 Agent 只接收精确的任务描述（prompt 参数），天然隔离主会话的历史 Token</span></div>
-            </li>
-            <li>
-              <span class="freq-high">&#9733;&#9733;&#9733;</span>
-              <div><span class="op-name">调用质量 &gt; 数量</span><br><span class="op-desc">精确描述一次到位，比模糊描述多次重试节省 3-5x Token 消耗</span></div>
-            </li>
-            <li>
-              <span class="freq-mid">&#9733;&#9733;</span>
-              <div><span class="op-name">并行 vs 串行策略</span><br><span class="op-desc">独立任务并行执行（各自上下文隔离），有依赖的任务串行传递最小上下文</span></div>
-            </li>
-            <li>
-              <span class="freq-high">&#9733;&#9733;&#9733;</span>
-              <div><span class="op-name">子 Agent 模型降级</span><br><span class="op-desc">通过环境变量或 settings.json 将子 Agent 指定为 Haiku/Sonnet，大幅降低执行成本</span></div>
-            </li>
-          </ul>
-        </div>
-        <div class="op-card cat-green">
-          <h4>智能模型路由</h4>
-          <ul class="op-list">
-            <li>
-              <span class="freq-high">&#9733;&#9733;&#9733;</span>
-              <div><span class="op-name">Sonnet 日常 + Opus 架构</span><br><span class="op-desc">日常编码用 Sonnet（性价比最优），架构设计 / 复杂重构用 Opus</span></div>
-            </li>
-            <li>
-              <span class="freq-high">&#9733;&#9733;&#9733;</span>
-              <div><span class="op-name">输出 Token 控制</span><br><span class="op-desc">输出成本是输入的 5 倍。在 Prompt 中指定"简洁回答 / 只输出代码"可显著降低输出 Token</span></div>
-            </li>
-            <li>
-              <span class="freq-mid">&#9733;&#9733;</span>
-              <div><span class="op-name">历史裁剪</span><br><span class="op-desc">只保留最近 N 条消息，丢弃已完成任务的历史上下文</span></div>
-            </li>
-            <li>
-              <span class="freq-high">&#9733;&#9733;&#9733;</span>
-              <div><span class="op-name">上下文压缩</span><br><span class="op-desc">长文档先用小模型摘要再注入主上下文，节省 90% 输入 Token</span></div>
-            </li>
-            <li>
-              <span class="freq-mid">&#9733;&#9733;</span>
-              <div><span class="op-name">Prompt Cache</span><br><span class="op-desc">保持系统提示词稳定不变以命中缓存，缓存命中时输入成本降低 90%</span></div>
-            </li>
+        <div class="billing-col">
+          <h5 class="api-label">&#9670; 按量制（API / BYOK）</h5>
+          <ul>
+            <li>OpenCode / aider + API Key</li>
+            <li>Claude Code + API Key (BYOK)</li>
+            <li>Gemini CLI 免费额度 + 超量按量</li>
+            <li><strong style="color:var(--text);">优化收益</strong>：直接降低账单，立竿见影</li>
+            <li><strong style="color:var(--text);">适合</strong>：重度用户 / 团队，成本弹性大</li>
           </ul>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── 区块 3: 实战配置示例 ── -->
+  <!-- ── 区块 1.5: 实战省钱方案 ── -->
   <div class="card">
     <div class="card-head">
-      <h3>实战配置示例</h3>
+      <h3>实战省钱方案：中转站与模型替代</h3>
+      <span class="card-badge">COST HACK</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">国内开发者的三种实战降本路径 &mdash;&mdash; 中转站、国产模型替代、订阅制套餐，可组合使用</p>
+
+      <div style="overflow-x:auto;">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>方案</th>
+              <th>原理</th>
+              <th>配置方式</th>
+              <th>适合场景</th>
+              <th>注意事项</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>API 中转站</td>
+              <td>通过第三方中转服务代理 Anthropic 官方 API，解决网络可达性问题</td>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--cyan);">ANTHROPIC_BASE_URL=中转地址<br>ANTHROPIC_AUTH_TOKEN=中转Key</td>
+              <td class="dim">想保持原版 Claude 体验，网络受限</td>
+              <td class="warn">选择有 SLA 保障的服务商；注意 Key 安全</td>
+            </tr>
+            <tr>
+              <td>国产模型替代<br><span style="font-size:0.72rem;color:var(--text3);">（GLM / Kimi / 豆包）</span></td>
+              <td>国产模型兼容 Anthropic API 格式，直接替换 BASE_URL 即可在 Claude Code / Gemini CLI 中使用</td>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--cyan);">ANTHROPIC_BASE_URL=模型API地址<br>ANTHROPIC_AUTH_TOKEN=模型Key<br>ANTHROPIC_MODEL=glm-4.7</td>
+              <td class="dim">追求低延迟、低成本、合规访问</td>
+              <td class="warn">模型能力有差异；复杂任务建议搭配原版</td>
+            </tr>
+            <tr>
+              <td>GLM Coding Plan<br><span style="font-size:0.72rem;color:var(--text3);">（订阅套餐）</span></td>
+              <td>智谱推出的编码专属套餐，&yen;20/月起，在 Claude Code / Cline / OpenCode 等 20+ 工具中直接使用 GLM-4.7</td>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--cyan);">ANTHROPIC_BASE_URL=bigmodel地址<br>ANTHROPIC_AUTH_TOKEN=智谱Key<br><span style="color:var(--text3);"># 自动路由 GLM-4.7</span></td>
+              <td class="dim">预算有限；宣称 Claude Pro 1/7 价格、3x 用量</td>
+              <td class="warn">高峰期可能限速；每 5 小时额度周期</td>
+            </tr>
+            <tr>
+              <td>Claude Code Router<br><span style="font-size:0.72rem;color:var(--text3);">（多模型路由）</span></td>
+              <td>开源工具 claude-code-router，可在 Claude Code 中按需路由到不同模型提供商</td>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--cyan);">npm i -g claude-code-router<br>ccr activate</td>
+              <td class="dim">需要灵活切换多个模型 / 提供商</td>
+              <td class="warn">社区维护；需自行配置 config.json</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="insight" style="margin-top:18px;margin-bottom:0;">
+        <h4>组合策略建议</h4>
+        <p><strong style="color:var(--orange);">日常开发</strong>：GLM Coding Plan（&yen;20/月）覆盖日常编码，复杂架构任务切回 Claude 官方。<strong style="color:var(--cyan);">团队场景</strong>：Claude Code Router + 多 Key 轮转，Sonnet 做主力 + GLM-4.5-Air 做子 Agent。<strong style="color:var(--purple);">极致省钱</strong>：GLM-4.7-Flash（免费）+ Gemini CLI 免费额度，零成本起步。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 区块 2: 五大优化维度 ── -->
+  <div class="card">
+    <div class="card-head">
+      <h3>五大优化维度</h3>
+      <span class="card-badge">STRATEGY</span>
+    </div>
+    <div class="card-body">
+      <p class="card-note">按落地难度从低到高排列，优先从底层开始 &mdash;&mdash; 投入产出比最高</p>
+
+      <div class="cost-pyramid">
+        <!-- Tier 5 -->
+        <div class="pyramid-tier tier-orange">
+          <span class="tier-num">5</span>
+          <span class="tier-name">Prompt Caching</span>
+          <span class="tier-desc">系统提示词 + CLAUDE.md 保持稳定 &rarr; 自动触发缓存 &rarr; 后续请求读缓存仅 0.1x 成本</span>
+          <span class="tier-save">-90%</span>
+        </div>
+        <!-- Tier 4 -->
+        <div class="pyramid-tier tier-purple">
+          <span class="tier-num">4</span>
+          <span class="tier-name">模型路由级联</span>
+          <span class="tier-desc">Haiku 做搜索 &rarr; Sonnet 日常编码 &rarr; Opus 仅用于架构级任务，按需升级</span>
+          <span class="tier-save">-40~70%</span>
+        </div>
+        <!-- Tier 3 -->
+        <div class="pyramid-tier tier-cyan">
+          <span class="tier-num">3</span>
+          <span class="tier-name">子 Agent 隔离</span>
+          <span class="tier-desc">具体实现委派子 Agent，主会话保持编排角色不膨胀，每个子 Agent 天然隔离上下文</span>
+          <span class="tier-save">-30~60%</span>
+        </div>
+        <!-- Tier 2 -->
+        <div class="pyramid-tier tier-blue">
+          <span class="tier-num">2</span>
+          <span class="tier-name">Context 裁剪</span>
+          <span class="tier-desc">CLAUDE.md 分层管理 + MCP Server 按需裁剪 + /compact 压缩 + 目录屏蔽</span>
+          <span class="tier-save">-20~50%</span>
+        </div>
+        <!-- Tier 1 -->
+        <div class="pyramid-tier tier-green">
+          <span class="tier-num">1</span>
+          <span class="tier-name">输出控制（5x 杠杆）</span>
+          <span class="tier-desc">输出单价是输入 3~5 倍 &mdash;&mdash; &ldquo;简洁回答&rdquo;指令 + 只输出 diff + 不解释已知概念</span>
+          <span class="tier-save">-30~60%</span>
+        </div>
+      </div>
+
+      <div class="op-grid" style="margin-top:20px;">
+        <div class="op-card cat-green">
+          <h4>&#9312; 输出控制</h4>
+          <p style="margin-bottom:8px;">输出成本是输入的 3~5 倍，控制输出量是最高杠杆。</p>
+          <ul class="op-list">
+            <li>
+              <span class="freq-high">&#9733;&#9733;&#9733;</span>
+              <div><span class="op-name">CLAUDE.md 指令控制</span><br><span class="op-desc">&ldquo;回答简洁，先给结论&rdquo;&ldquo;代码修改只输出 diff&rdquo;&ldquo;不要解释已知概念&rdquo;</span></div>
+            </li>
+            <li>
+              <span class="freq-high">&#9733;&#9733;&#9733;</span>
+              <div><span class="op-name">Prompt 级精确控制</span><br><span class="op-desc">&ldquo;只返回修改后的函数&rdquo;&ldquo;用 bullet points，不超过 5 条&rdquo;</span></div>
+            </li>
+            <li>
+              <span class="freq-mid">&#9733;&#9733;</span>
+              <div><span class="op-name">Edit &gt; Write</span><br><span class="op-desc">小改动用 Edit tool 而非 Write tool，避免输出完整文件</span></div>
+            </li>
+          </ul>
+          <div class="savings-meter">
+            <div class="meter-bar"><div class="meter-fill fill-green" style="width:50%;"></div></div>
+            <span class="meter-label" style="color:var(--green);">-30~60%</span>
+          </div>
+        </div>
+
+        <div class="op-card cat-blue">
+          <h4>&#9313; Context 裁剪</h4>
+          <p style="margin-bottom:8px;">减少每次请求携带的输入 Token。</p>
+          <ul class="op-list">
+            <li>
+              <span class="freq-high">&#9733;&#9733;&#9733;</span>
+              <div><span class="op-name">MCP Server 裁剪</span><br><span class="op-desc">每个 MCP 注入工具描述到系统提示词，即使不调用也占 Token。按需启用</span></div>
+            </li>
+            <li>
+              <span class="freq-high">&#9733;&#9733;&#9733;</span>
+              <div><span class="op-name">CLAUDE.md 分层</span><br><span class="op-desc">根级 &lt;50 行 + 模块级详尽，模型只加载当前目录链上的文件</span></div>
+            </li>
+            <li>
+              <span class="freq-high">&#9733;&#9733;&#9733;</span>
+              <div><span class="op-name">/compact + 80% 规则</span><br><span class="op-desc">上下文占用超 80% 时压缩或新建会话，防止 Token 爆炸</span></div>
+            </li>
+            <li>
+              <span class="freq-mid">&#9733;&#9733;</span>
+              <div><span class="op-name">目录屏蔽</span><br><span class="op-desc">CLAUDE.md 中禁止扫描 node_modules / dist / .git / *.lock</span></div>
+            </li>
+          </ul>
+          <div class="savings-meter">
+            <div class="meter-bar"><div class="meter-fill fill-blue" style="width:40%;"></div></div>
+            <span class="meter-label" style="color:var(--blue);">-20~50%</span>
+          </div>
+        </div>
+
+        <div class="op-card cat-cyan">
+          <h4>&#9314; 子 Agent 隔离</h4>
+          <p style="margin-bottom:8px;">上下文天然隔离，主会话不膨胀。</p>
+          <ul class="op-list">
+            <li>
+              <span class="freq-high">&#9733;&#9733;&#9733;</span>
+              <div><span class="op-name">主控编排 + 子 Agent 执行</span><br><span class="op-desc">子 Agent 只接收精确任务描述，不继承主会话历史 Token</span></div>
+            </li>
+            <li>
+              <span class="freq-high">&#9733;&#9733;&#9733;</span>
+              <div><span class="op-name">精确描述一次到位</span><br><span class="op-desc">模糊描述多次重试消耗 3~5x Token，精确 prompt 是最佳投资</span></div>
+            </li>
+            <li>
+              <span class="freq-high">&#9733;&#9733;&#9733;</span>
+              <div><span class="op-name">子 Agent 模型降级</span><br><span class="op-desc">通过 AGENTS.md / settings.json / env 将子 Agent 指定为 Haiku</span></div>
+            </li>
+          </ul>
+          <div class="savings-meter">
+            <div class="meter-bar"><div class="meter-fill fill-cyan" style="width:50%;"></div></div>
+            <span class="meter-label" style="color:var(--cyan);">-30~60%</span>
+          </div>
+        </div>
+
+        <div class="op-card cat-purple">
+          <h4>&#9315; 模型路由级联</h4>
+          <p style="margin-bottom:8px;">按任务复杂度选择模型，避免杀鸡用牛刀。</p>
+          <ul class="op-list">
+            <li>
+              <span class="freq-high">&#9733;&#9733;&#9733;</span>
+              <div><span class="op-name">Haiku &rarr; Sonnet &rarr; Opus</span><br><span class="op-desc">搜索/格式化用 Haiku，日常编码用 Sonnet，架构设计才用 Opus</span></div>
+            </li>
+            <li>
+              <span class="freq-mid">&#9733;&#9733;</span>
+              <div><span class="op-name">跨厂商路由</span><br><span class="op-desc">OpenCode 支持多 provider：规划用 Gemini 长上下文，实现用 Claude Sonnet</span></div>
+            </li>
+            <li>
+              <span class="freq-mid">&#9733;&#9733;</span>
+              <div><span class="op-name">上下文先摘要</span><br><span class="op-desc">长文档先用小模型摘要再注入主上下文，节省 90% 输入 Token</span></div>
+            </li>
+          </ul>
+          <div class="savings-meter">
+            <div class="meter-bar"><div class="meter-fill fill-purple" style="width:60%;"></div></div>
+            <span class="meter-label" style="color:var(--purple);">-40~70%</span>
+          </div>
+        </div>
+
+        <div class="op-card cat-orange">
+          <h4>&#9316; Prompt Caching</h4>
+          <p style="margin-bottom:8px;">节省幅度最高的高级策略，自动触发。</p>
+          <ul class="op-list">
+            <li>
+              <span class="freq-high">&#9733;&#9733;&#9733;</span>
+              <div><span class="op-name">系统提示词缓存</span><br><span class="op-desc">保持 CLAUDE.md + 系统提示词稳定 &rarr; 后续请求自动命中缓存，输入成本降至 0.1x</span></div>
+            </li>
+            <li>
+              <span class="freq-high">&#9733;&#9733;&#9733;</span>
+              <div><span class="op-name">长会话 &gt; 频繁新建</span><br><span class="op-desc">同一会话中缓存命中率持续提升，频繁新建会话会丢失缓存</span></div>
+            </li>
+            <li>
+              <span class="freq-mid">&#9733;&#9733;</span>
+              <div><span class="op-name">Batch API</span><br><span class="op-desc">非实时任务（测试生成/文档生成）用 Batch API，额外节省 50%</span></div>
+            </li>
+          </ul>
+          <div class="savings-meter">
+            <div class="meter-bar"><div class="meter-fill fill-orange" style="width:90%;"></div></div>
+            <span class="meter-label" style="color:var(--orange);">-90%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 区块 3: 跨工具实战配置 ── -->
+  <div class="card">
+    <div class="card-head">
+      <h3>跨工具实战配置</h3>
       <span class="card-badge">CONFIG</span>
     </div>
     <div class="card-body">
-      <div class="spec-block">
-        <div class="spec-block-head">
-          <span>CLAUDE.md 分层结构</span>
-          <span class="spec-lang">STRUCTURE</span>
-        </div>
-        <pre><span class="comment"># CLAUDE.md 分层策略 — 根级精简，模块级详尽</span>
+      <p class="card-note">以下配置可直接复制使用，覆盖 Claude Code / OpenCode / Cursor / Gemini CLI 主流工具</p>
 
-<span class="key">project-root/</span>
-  <span class="key">CLAUDE.md</span>              <span class="comment"># 根级：&lt;50 行，仅项目级约束</span>
-  <span class="str">├── tech-stack: Next.js + TypeScript</span>
-  <span class="str">├── code-style: eslint + prettier</span>
-  <span class="str">├── 禁止扫描: node_modules/, dist/, .git/</span>
-  <span class="str">└── 模型偏好: 日常 Sonnet, 架构 Opus</span>
-
-  <span class="key">src/</span>
-    <span class="key">CLAUDE.md</span>            <span class="comment"># 模块级：详细组件规范 + API 约定</span>
-    <span class="key">components/</span>
-      <span class="key">CLAUDE.md</span>          <span class="comment"># 子模块级：组件命名 + 样式约定</span>
-
-<span class="comment"># 模型只加载 当前目录 → 根目录 链上的 CLAUDE.md</span>
-<span class="comment"># 在 src/components/ 工作时，加载 3 个文件</span>
-<span class="comment"># 在 project-root/ 工作时，只加载 1 个文件</span></pre>
+      <div class="cross-tool-tabs" id="configTabs">
+        <button class="cross-tool-tab active" onclick="switchTab(event, 'tab-claude-md')">CLAUDE.md</button>
+        <button class="cross-tool-tab" onclick="switchTab(event, 'tab-agents-md')">AGENTS.md</button>
+        <button class="cross-tool-tab" onclick="switchTab(event, 'tab-opencode')">OpenCode</button>
+        <button class="cross-tool-tab" onclick="switchTab(event, 'tab-cursor')">Cursor</button>
+        <button class="cross-tool-tab" onclick="switchTab(event, 'tab-gemini')">Gemini CLI</button>
       </div>
-      <div class="spec-block">
-        <div class="spec-block-head">
-          <span>子 Agent 模型降级配置</span>
-          <span class="spec-lang">BASH</span>
-        </div>
-        <pre><span class="comment"># 方式 1: 环境变量 — 全局生效</span>
-<span class="keyword">export</span> <span class="key">CLAUDE_CODE_DEFAULT_MODEL</span>=<span class="str">"claude-sonnet-4-20250514"</span>
-<span class="keyword">export</span> <span class="key">ANTHROPIC_SMALL_FAST_MODEL</span>=<span class="str">"claude-haiku-3-5-20241022"</span>
+      <div class="cross-tool-panels">
+        <!-- Tab: CLAUDE.md -->
+        <div class="cross-tool-panel active" id="tab-claude-md">
+          <div class="spec-block" style="border:none;border-radius:0;margin:0;">
+            <div class="spec-block-head">
+              <span>CLAUDE.md 成本优化模板（适用 Claude Code / OpenCode）</span>
+              <span class="spec-lang">MARKDOWN</span>
+            </div>
+            <pre><span class="comment"># CLAUDE.md — 成本优化版</span>
 
-<span class="comment"># 方式 2: settings.json — 项目级生效</span>
-<span class="comment"># .claude/settings.json</span>
-{
-  <span class="key">"preferences"</span>: {
-    <span class="str">"model"</span>: <span class="str">"claude-sonnet-4-20250514"</span>,
-    <span class="str">"smallFastModel"</span>: <span class="str">"claude-haiku-3-5-20241022"</span>
-  }
-}
-
-<span class="comment"># 方式 3: Task tool 指定 — 单次调用降级</span>
-<span class="comment"># 在 Task 调用中指定 model 参数</span>
-<span class="key">model:</span> <span class="str">"haiku"</span>   <span class="comment"># 适用于格式化、搜索、简单重构</span>
-<span class="key">model:</span> <span class="str">"sonnet"</span>  <span class="comment"># 适用于日常编码、测试编写</span>
-<span class="key">model:</span> <span class="str">"opus"</span>    <span class="comment"># 适用于架构设计、复杂重构</span></pre>
-      </div>
-      <div class="spec-block">
-        <div class="spec-block-head">
-          <span>输出 Token 控制指令</span>
-          <span class="spec-lang">PROMPT</span>
-        </div>
-        <pre><span class="comment"># 在 CLAUDE.md 中添加输出控制指令</span>
-
-<span class="key">## Response Rules</span>
+<span class="key">## Response Rules（输出控制 — 省 3~5x 输出成本）</span>
 <span class="str">- 回答简洁，先给结论</span>
 <span class="str">- 代码修改只输出 diff，不要输出完整文件</span>
 <span class="str">- 不要添加不必要的注释和文档字符串</span>
 <span class="str">- 不要解释已知概念</span>
 <span class="str">- 如果只改 1-2 行，用 Edit tool 而不是 Write tool</span>
 
-<span class="comment"># 在具体 prompt 中控制输出</span>
-<span class="value">"只返回修改后的函数，不要解释"</span>
-<span class="value">"用 bullet points 总结，不超过 5 条"</span>
-<span class="value">"给出命令，不需要解释每个参数"</span></pre>
+<span class="key">## Model Preferences（模型路由）</span>
+<span class="str">- 日常编码: Sonnet（默认）</span>
+<span class="str">- 架构设计/复杂重构: Opus</span>
+<span class="str">- 搜索/格式化/子 Agent: Haiku</span>
+
+<span class="key">## Ignore（Context 裁剪 — 减少输入 Token）</span>
+<span class="str">- node_modules/, dist/, build/, .git/</span>
+<span class="str">- *.lock, *.map, *.min.js, *.min.css</span>
+<span class="str">- coverage/, .next/, .nuxt/</span>
+
+<span class="key">## Caching 提示</span>
+<span class="comment"># 此文件内容保持稳定 → 自动触发 Prompt Cache</span>
+<span class="comment"># 频繁改动会导致缓存失效，增加成本</span></pre>
+          </div>
+        </div>
+
+        <!-- Tab: AGENTS.md -->
+        <div class="cross-tool-panel" id="tab-agents-md">
+          <div class="spec-block" style="border:none;border-radius:0;margin:0;">
+            <div class="spec-block-head">
+              <span>AGENTS.md 降本定义（适用 Claude Code / OpenCode 子 Agent）</span>
+              <span class="spec-lang">YAML</span>
+            </div>
+            <pre><span class="comment"># .claude/agents/code-searcher.md</span>
+<span class="comment"># 关键降本字段：model + tools（最小化工具注入）</span>
+
+<span class="key">---</span>
+<span class="key">name:</span> <span class="str">code-searcher</span>
+<span class="key">model:</span> <span class="str">haiku</span>                  <span class="comment"># 明确指定最便宜的模型</span>
+<span class="key">tools:</span> <span class="str">[Read, Glob, Grep]</span>      <span class="comment"># 最小工具集，减少系统提示注入</span>
+<span class="key">description:</span> <span class="str">"搜索代码库中的特定模式和定义"</span>
+<span class="key">---</span>
+
+搜索指定的代码模式，返回文件路径和行号。
+不要解释代码含义，只返回搜索结果。
+
+<span class="comment"># .claude/agents/test-runner.md</span>
+
+<span class="key">---</span>
+<span class="key">name:</span> <span class="str">test-runner</span>
+<span class="key">model:</span> <span class="str">haiku</span>                  <span class="comment"># 运行测试不需要大模型</span>
+<span class="key">tools:</span> <span class="str">[Bash, Read]</span>           <span class="comment"># 只需执行命令和读文件</span>
+<span class="key">description:</span> <span class="str">"运行测试并报告结果"</span>
+<span class="key">---</span>
+
+执行测试命令，只返回通过/失败的摘要。
+
+<span class="comment"># 降本原理：</span>
+<span class="comment"># 1. model: haiku → 单价是 Opus 的 1/20</span>
+<span class="comment"># 2. tools 最小化 → 减少系统提示词中的工具描述注入</span>
+<span class="comment"># 3. 精确 description → 避免歧义导致的重试</span></pre>
+          </div>
+        </div>
+
+        <!-- Tab: OpenCode -->
+        <div class="cross-tool-panel" id="tab-opencode">
+          <div class="spec-block" style="border:none;border-radius:0;margin:0;">
+            <div class="spec-block-head">
+              <span>OpenCode 多模型路由配置</span>
+              <span class="spec-lang">TOML</span>
+            </div>
+            <pre><span class="comment"># ~/.config/opencode/config.toml</span>
+
+<span class="key">[providers.anthropic]</span>
+<span class="str">api_key</span> = <span class="str">"sk-ant-..."</span>
+
+<span class="key">[providers.google]</span>
+<span class="str">api_key</span> = <span class="str">"AIza..."</span>
+
+<span class="comment"># 默认模型：日常编码用 Sonnet（性价比最优）</span>
+<span class="key">[models.default]</span>
+<span class="str">provider</span> = <span class="str">"anthropic"</span>
+<span class="str">model</span> = <span class="str">"claude-sonnet-4-20250514"</span>
+
+<span class="comment"># 规划模型：用 Gemini 长上下文做架构分析</span>
+<span class="key">[models.architect]</span>
+<span class="str">provider</span> = <span class="str">"google"</span>
+<span class="str">model</span> = <span class="str">"gemini-2.5-pro"</span>
+
+<span class="comment"># 降本策略：</span>
+<span class="comment"># - 默认 Sonnet → $3/$15 (vs Opus $15/$75)</span>
+<span class="comment"># - 规划用 Gemini → 1M 上下文免拼接</span>
+<span class="comment"># - 搜索子 Agent 可降级 Haiku</span></pre>
+          </div>
+        </div>
+
+        <!-- Tab: Cursor -->
+        <div class="cross-tool-panel" id="tab-cursor">
+          <div class="spec-block" style="border:none;border-radius:0;margin:0;">
+            <div class="spec-block-head">
+              <span>Cursor 成本控制策略</span>
+              <span class="spec-lang">STRATEGY</span>
+            </div>
+            <pre><span class="key">## Cursor 成本优化（Pro $20/月 快速请求额度管理）</span>
+
+<span class="comment"># 1. 模型选择策略</span>
+<span class="str">Tab 补全</span>       → 不消耗快速请求，随便用
+<span class="str">Cmd+K（Edit）</span>  → 消耗快速请求，精确描述一次到位
+<span class="str">Composer</span>       → 消耗最多请求，仅用于多文件变更
+
+<span class="comment"># 2. 模型切换省额度</span>
+<span class="str">默认 claude-sonnet-4</span>   → 快速请求性价比最优
+<span class="str">切换 gpt-4.1-mini</span>     → 简单任务省快速请求额度
+<span class="str">仅复杂任务 claude-opus</span> → 架构设计才启用
+
+<span class="comment"># 3. .cursorrules 输出控制</span>
+<span class="value">- 回答简洁，不要重复问题</span>
+<span class="value">- 只修改需要改的代码，不要输出完整文件</span>
+<span class="value">- 不要添加不必要的导入和类型注解</span>
+
+<span class="comment"># 4. 额度不够时的备选方案</span>
+<span class="str">快速请求用完 → 切换慢速请求（免费但排队）</span>
+<span class="str">或切换 Claude Code / OpenCode 继续工作</span></pre>
+          </div>
+        </div>
+
+        <!-- Tab: Gemini CLI -->
+        <div class="cross-tool-panel" id="tab-gemini">
+          <div class="spec-block" style="border:none;border-radius:0;margin:0;">
+            <div class="spec-block-head">
+              <span>Gemini CLI 免费额度利用</span>
+              <span class="spec-lang">BASH</span>
+            </div>
+            <pre><span class="comment"># Gemini CLI 免费额度策略</span>
+
+<span class="comment"># 1. 免费额度范围（Google AI Studio）</span>
+<span class="str">Gemini 2.5 Flash</span>: <span class="value">免费（RPM/RPD 有限制）</span>
+<span class="str">Gemini 2.5 Pro</span>:   <span class="value">免费额度有限，超量按量计费</span>
+
+<span class="comment"># 2. 混用策略：Claude Code + Gemini CLI</span>
+<span class="keyword">export</span> <span class="key">GEMINI_API_KEY</span>=<span class="str">"AIza..."</span>
+
+<span class="comment"># 高价值任务 → Claude Code（精准但贵）</span>
+<span class="str">claude "重构 auth 模块的错误处理"</span>
+
+<span class="comment"># 探索性任务 → Gemini CLI（免费额度）</span>
+<span class="str">gemini "分析这个项目的架构，列出改进建议"</span>
+
+<span class="comment"># 3. 注意事项</span>
+<span class="comment"># - 免费额度有 RPD (Requests Per Day) 限制</span>
+<span class="comment"># - 高峰期可能触发限流</span>
+<span class="comment"># - 适合探索/规划/Review，不适合高频批量任务</span>
+<span class="comment"># - Gemini CLI 支持读取 GEMINI.md 作为上下文文件</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-callout" style="margin-top:16px;">
+        <span class="tip-icon">&#10003;</span>
+        <span><strong>验证方法</strong>：配置修改后，用 <code style="background:rgba(74,158,255,0.08);padding:1px 5px;border-radius:3px;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:0.72rem;">npx ccusage@latest</code> 对比优化前后的 Token 消耗量。OpenCode 用户查看内置成本面板。Cursor 用户在设置中查看快速请求余额。</span>
       </div>
     </div>
   </div>
 
-  <!-- ── 区块 4: 月度成本估算（增强版） ── -->
+  <!-- ── 区块 4: Prompt Caching 深度解析 ── -->
   <div class="card">
     <div class="card-head">
-      <h3>月度成本估算</h3>
-      <span class="card-badge">COST</span>
+      <h3>Prompt Caching 深度解析</h3>
+      <span class="card-badge">CACHING</span>
     </div>
     <div class="card-body">
-      <p class="card-note">基于重度使用场景（每天 4-6 小时）的估算，优化后为应用三大维度策略的效果</p>
+      <p class="card-note">当前内容中被低估的最高节省策略 &mdash;&mdash; 成熟会话中可节省 90% 输入成本</p>
+
+      <div class="spec-block">
+        <div class="spec-block-head">
+          <span>Prompt Caching 工作机制</span>
+          <span class="spec-lang">MECHANISM</span>
+        </div>
+        <pre><span class="key">请求结构（简化）：</span>
+
+<span class="comment">┌──────────────────────────────────────────┐</span>
+<span class="comment">│</span> <span class="str">System Prompt</span>    <span class="comment">← 稳定部分，自动缓存      │</span>
+<span class="comment">│</span> <span class="str">CLAUDE.md 内容</span>   <span class="comment">← 稳定部分，自动缓存      │</span>
+<span class="comment">│</span> <span class="str">MCP 工具描述</span>     <span class="comment">← 稳定部分，自动缓存      │</span>
+<span class="comment">├──────────────────────────────────────────┤</span>
+<span class="comment">│</span> <span class="value">对话历史</span>         <span class="comment">← 增量部分，每次新增       │</span>
+<span class="comment">│</span> <span class="value">当前用户消息</span>     <span class="comment">← 变化部分，不缓存         │</span>
+<span class="comment">└──────────────────────────────────────────┘</span>
+
+<span class="key">成本计算（以 Claude Sonnet 4 为例）：</span>
+  首次请求: 系统提示 10K tokens × <span class="num">$3/1M</span> = <span class="hl">$0.03</span>
+  后续请求: 缓存命中 10K tokens × <span class="num">$0.30/1M</span> = <span class="value">$0.003</span>  <span class="comment">← 节省 90%</span>
+
+<span class="key">触发条件：</span>
+  <span class="str">1. 前缀匹配</span> — 请求开头的 token 序列必须与缓存完全一致
+  <span class="str">2. 最小长度</span> — 缓存内容 &ge; 1024 tokens（Sonnet/Opus）
+  <span class="str">3. 5 分钟 TTL</span> — 缓存有效期 5 分钟，频繁使用自动续期</pre>
+      </div>
+
+      <h4 style="font-size:0.84rem;margin:16px 0 10px;color:var(--text);">最大化缓存命中率</h4>
+      <div class="op-grid">
+        <div class="op-card cat-green">
+          <h4 style="color:var(--green);">&#10003; 应该做</h4>
+          <ul class="op-list">
+            <li><div><span class="op-name">保持 CLAUDE.md 稳定</span><br><span class="op-desc">不要频繁修改，每次改动都会导致缓存失效</span></div></li>
+            <li><div><span class="op-name">系统提示放前面</span><br><span class="op-desc">稳定内容放请求开头，变化内容放后面</span></div></li>
+            <li><div><span class="op-name">长会话优于频繁新建</span><br><span class="op-desc">同一会话中缓存命中率持续提升</span></div></li>
+            <li><div><span class="op-name">MCP 配置保持固定</span><br><span class="op-desc">MCP 工具描述也参与缓存，变动会失效</span></div></li>
+          </ul>
+        </div>
+        <div class="op-card cat-orange">
+          <h4 style="color:var(--orange);">&#10007; 避免做</h4>
+          <ul class="op-list">
+            <li><div><span class="op-name">频繁改 CLAUDE.md</span><br><span class="op-desc">每次改动 = 缓存失效 = 全价重新计算</span></div></li>
+            <li><div><span class="op-name">每次任务新建会话</span><br><span class="op-desc">新会话无缓存积累，首次请求全价</span></div></li>
+            <li><div><span class="op-name">动态切换 MCP 配置</span><br><span class="op-desc">MCP 工具集变化导致系统提示前缀变化</span></div></li>
+            <li><div><span class="op-name">忽略 5 分钟 TTL</span><br><span class="op-desc">长时间不操作后缓存过期，需重新加载</span></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tip-callout" style="margin-top:16px;">
+        <span class="tip-icon">&#9432;</span>
+        <span><strong>Batch API 额外省 50%</strong>：非实时任务（批量测试生成、文档翻译、代码审查报告）可使用 Anthropic Batch API，在标准价格基础上再打 5 折。适用于 CI/CD 流水线和离线批处理场景。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 区块 5: 成本监控与实际基准 ── -->
+  <div class="card">
+    <div class="card-head">
+      <h3>成本监控与实际基准</h3>
+      <span class="card-badge">MONITOR</span>
+    </div>
+    <div class="card-body">
+      <h4 style="font-size:0.84rem;margin-bottom:12px;color:var(--text);">ccusage &mdash;&mdash; Claude Code 成本监控工具</h4>
+      <div class="monitor-block">
+        <div class="monitor-head">
+          <span class="monitor-dot red"></span>
+          <span class="monitor-dot yellow"></span>
+          <span class="monitor-dot green"></span>
+          <span class="monitor-title">Terminal &mdash; ccusage</span>
+        </div>
+        <pre><span class="cmd">$ npx ccusage@latest</span>
+
+<span class="dim">  Period: 2025-01-01 ~ 2025-01-31</span>
+<span class="dim">  ─────────────────────────────────────────────</span>
+  <span class="path">Total Cost:</span>        <span class="hl">$142.58</span>
+  <span class="path">Input Tokens:</span>      <span class="val">45.2M</span>  <span class="dim">(incl. cache read 28.1M)</span>
+  <span class="path">Output Tokens:</span>     <span class="val">8.7M</span>
+  <span class="path">Cache Read:</span>        <span class="val">28.1M</span>  <span class="dim">(62% of input — 缓存命中良好)</span>
+  <span class="path">Cache Creation:</span>    <span class="val">3.2M</span>
+<span class="dim">  ─────────────────────────────────────────────</span>
+
+<span class="cmd">$ npx ccusage@latest daily</span>          <span class="dim"># 按日分解</span>
+<span class="cmd">$ npx ccusage@latest session</span>        <span class="dim"># 按会话分解</span>
+<span class="cmd">$ npx ccusage@latest blocks --live</span>  <span class="dim"># 实时监控</span></pre>
+      </div>
+
+      <h4 style="font-size:0.84rem;margin:20px 0 12px;color:var(--text);">真实成本基准表</h4>
       <div style="overflow-x:auto;">
         <table class="compare-table">
           <thead>
             <tr>
-              <th>方案</th>
-              <th>原始成本</th>
+              <th>使用强度</th>
+              <th>场景</th>
+              <th>推荐方案</th>
+              <th>月成本</th>
               <th>优化后</th>
-              <th>节省</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Claude Code Max（订阅）</td>
-              <td>$200/月</td>
-              <td>$200/月</td>
-              <td class="dim">固定费用，优化延长可用量</td>
+              <td>&#128994; 轻度</td>
+              <td>偶尔补全 / 问答</td>
+              <td>Copilot Free / Gemini Free</td>
+              <td>$0</td>
+              <td class="highlight">$0</td>
             </tr>
             <tr>
-              <td>Claude Code Pro（订阅）</td>
-              <td>$20/月</td>
-              <td>$20/月</td>
-              <td class="dim">固定费用，优化减少触顶频率</td>
+              <td>&#128309; 日常</td>
+              <td>每天 1-2h 编码</td>
+              <td>Claude Pro $20 / Cursor $20</td>
+              <td>$20</td>
+              <td class="dim">$20（额度延长 2-3x）</td>
             </tr>
             <tr>
-              <td>Cursor Pro（订阅）</td>
-              <td>$20/月</td>
-              <td>$20/月</td>
-              <td class="dim">固定费用，优化延长快速请求额度</td>
+              <td>&#128992; 专业</td>
+              <td>每天 4-6h 开发</td>
+              <td>Claude Max $100</td>
+              <td>$100</td>
+              <td class="dim">$100（额度延长 2x）</td>
             </tr>
             <tr>
-              <td>OpenCode + API（按量）</td>
-              <td>$150/月</td>
-              <td>$30-60/月</td>
-              <td class="highlight">60-80%</td>
+              <td>&#128308; 重度</td>
+              <td>全天 8h+ 开发</td>
+              <td>Claude Max $200 / API</td>
+              <td>$200-500</td>
+              <td class="highlight">$60-200（-60~70%）</td>
             </tr>
             <tr>
-              <td>GLM Plan（按量）</td>
-              <td>$30/月</td>
-              <td>$10-15/月</td>
-              <td class="highlight">50-67%</td>
-            </tr>
-            <tr>
-              <td>Gemini CLI（按量）</td>
-              <td>$50/月</td>
-              <td>$0-20/月</td>
-              <td class="highlight">60-100%</td>
+              <td>&#128995; 团队</td>
+              <td>多人协作 / CI</td>
+              <td>API + Batch</td>
+              <td>$500-2000</td>
+              <td class="highlight">$150-600（-70%）</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p class="card-note" style="margin-top:14px;margin-bottom:0;">订阅制：优化策略不降账单，但延长额度可用时长 | 按量制（API）：优化直接降低账单，效果立竿见影</p>
+
+      <h4 style="font-size:0.84rem;margin:20px 0 10px;color:var(--text);">优化前后对比案例</h4>
+      <div class="op-grid">
+        <div class="op-card cat-orange">
+          <h4 style="color:var(--orange);">优化前（典型问题用法）</h4>
+          <ul class="op-list">
+            <li><div><span class="op-name">865M tokens/月</span><br><span class="op-desc">频繁 @Codebase 全扫、每次新建会话、未裁剪 MCP</span></div></li>
+            <li><div><span class="op-name">月费 $2,595</span><br><span class="op-desc">全部使用 Opus，无输出控制指令</span></div></li>
+            <li><div><span class="op-name">缓存命中率 &lt;10%</span><br><span class="op-desc">频繁改 CLAUDE.md + 每次新建会话</span></div></li>
+          </ul>
+        </div>
+        <div class="op-card cat-green">
+          <h4 style="color:var(--green);">优化后（五维度策略）</h4>
+          <ul class="op-list">
+            <li><div><span class="op-name">187M tokens/月</span><br><span class="op-desc">按需检索、长会话复用、MCP 精简到 3-5 个</span></div></li>
+            <li><div><span class="op-name">月费 $98</span><br><span class="op-desc">Haiku 搜索 + Sonnet 编码 + 简洁输出指令</span></div></li>
+            <li><div><span class="op-name">缓存命中率 &gt;60%</span><br><span class="op-desc">CLAUDE.md 稳定 + 长会话 + MCP 固定</span></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tip-callout tip-warn" style="margin-top:12px;">
+        <span class="tip-icon">&#9888;</span>
+        <span>以上数据基于社区开发者真实分享，个人实际费用因使用习惯差异较大。建议用 <code style="background:rgba(74,158,255,0.08);padding:1px 5px;border-radius:3px;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:0.72rem;">ccusage</code> 建立自己的基线数据后再制定优化目标。</span>
+      </div>
     </div>
   </div>
 
-  <!-- ── 区块 5: Insight ── -->
+  <!-- ── 区块 6: 选型决策树 + Insight ── -->
+  <div class="card">
+    <div class="card-head">
+      <h3>选型决策树</h3>
+      <span class="card-badge">DECISION</span>
+    </div>
+    <div class="card-body">
+      <div class="mermaid">
+flowchart TD
+    A["需求类型"] --> B{"是否交互式开发？"}
+    B -->|是| C{"每天使用时长？"}
+    B -->|否| G["CI/CD / 批处理"]
+    C -->|"&lt;2h"| D["Claude Pro $20<br/>Cursor Pro $20<br/>Copilot $10-19"]
+    C -->|"2-6h"| E["Claude Max $100<br/>+ 五维度优化延长额度"]
+    C -->|"&gt;6h"| F["Claude Max $200<br/>或 API + BYOK"]
+    G --> H["API + Batch API<br/>比订阅省 50%+"]
+    F --> I{"成本敏感？"}
+    I -->|是| J["OpenCode + API<br/>+ Gemini Free 混用<br/>$60-150/月"]
+    I -->|否| K["Claude Max $200<br/>+ 优化延长 2x 额度"]
+
+    style A fill:#0f1628,stroke:#4a9eff,color:#dce4f0
+    style B fill:#0f1628,stroke:#22d3ee,color:#dce4f0
+    style C fill:#0f1628,stroke:#22d3ee,color:#dce4f0
+    style D fill:#0f1628,stroke:#34d399,color:#dce4f0
+    style E fill:#0f1628,stroke:#34d399,color:#dce4f0
+    style F fill:#0f1628,stroke:#fbbf24,color:#dce4f0
+    style G fill:#0f1628,stroke:#a78bfa,color:#dce4f0
+    style H fill:#0f1628,stroke:#a78bfa,color:#dce4f0
+    style I fill:#0f1628,stroke:#22d3ee,color:#dce4f0
+    style J fill:#0f1628,stroke:#34d399,color:#dce4f0
+    style K fill:#0f1628,stroke:#fbbf24,color:#dce4f0
+      </div>
+    </div>
+  </div>
+
   <div class="insight">
-    <h4>Token 优化的 80/20 法则</h4>
-    <p>80% 的 Token 浪费来自三个源头：<strong style="color:var(--cyan);">未裁剪的 MCP 系统提示词</strong>持续注入每次请求；<strong style="color:var(--purple);">主 Agent 累积的子任务执行细节</strong>撑满上下文窗口；<strong style="color:var(--green);">简单任务使用重型模型</strong>产生高额输出 Token 费用。</p>
-    <p style="margin-top:10px;">三步优先行动：<strong>1.</strong> 裁剪闲置 MCP Server &rarr; <strong>2.</strong> 复杂任务委派子 Agent &rarr; <strong>3.</strong> 日常编码切换 Sonnet。仅这三步即可覆盖大部分优化收益。</p>
+    <h4>成本优化的 80/20 法则</h4>
+    <p>80% 的成本浪费来自三个源头：<strong style="color:var(--orange);">未控制的输出</strong>（输出单价是输入 3~5 倍，一句&ldquo;简洁回答&rdquo;就能省一半）；<strong style="color:var(--cyan);">未裁剪的系统提示</strong>（MCP 工具描述 + 膨胀的 CLAUDE.md 每次请求都重复携带）；<strong style="color:var(--purple);">未利用的缓存</strong>（频繁新建会话和改动 CLAUDE.md 导致缓存持续失效）。</p>
+    <p style="margin-top:10px;">三步优先行动：<strong>1.</strong> CLAUDE.md 加&ldquo;简洁回答&rdquo;指令 &rarr; <strong>2.</strong> 裁剪闲置 MCP + 目录屏蔽 &rarr; <strong>3.</strong> 子 Agent 降级 Haiku + 保持长会话。仅这三步即可覆盖大部分优化收益。API 用户额外叠加 Prompt Caching + Batch API 可再省 50-90%。</p>
   </div>
 </div>
 
@@ -1635,7 +2455,7 @@ flowchart TD
 <div class="bottom-nav">
   <a href="index.html" class="bottom-nav-card">
     <div class="nav-dir">&#127968; 返回主页</div>
-    <h4>AI CLI 工具通识教学</h4>
+    <h4>AI CLI 工具分享</h4>
     <p>回到教程目录，浏览全部章节</p>
   </a>
 </div>
@@ -1655,6 +2475,16 @@ flowchart TD
     flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
     sequence: { useMaxWidth: true, mirrorActors: false }
   });
+</script>
+<script>
+  function switchTab(event, tabId) {
+    var tabs = document.querySelectorAll('.cross-tool-tab');
+    var panels = document.querySelectorAll('.cross-tool-panel');
+    tabs.forEach(function(t) { t.classList.remove('active'); });
+    panels.forEach(function(p) { p.classList.remove('active'); });
+    event.currentTarget.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
 </script>
 </body>
 </html>

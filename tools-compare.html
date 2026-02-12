@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>01 工具全景与选型 - AI CLI 工具通识教学</title>
+<title>01 工具全景与选型 - AI CLI 工具分享</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600&family=DM+Serif+Display&display=swap');
@@ -35,6 +35,7 @@
     background: var(--bg);
     color: var(--text);
     line-height: 1.75;
+    padding-left: 240px;
   }
 
   .hero {
@@ -345,6 +346,7 @@
 </style>
 </head>
 <body>
+<script src="sidebar.js"></script>
 
 <!-- ========== NAV ========== -->
 <nav style="display:flex;justify-content:space-between;align-items:center;padding:12px 28px;border-bottom:1px solid #192240;background:#0b1120;font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
@@ -357,7 +359,7 @@
 <div class="hero">
   <div class="hero-tag">CHAPTER 01</div>
   <h1>工具全景与选型</h1>
-  <p>Claude Code、OpenCode、GLM Plan、Cursor 四大 AI 编码工具（CLI / IDE）的特性对比与选型指南</p>
+  <p>Claude Code、OpenCode、Gemini CLI、Cursor 四大 AI 编码工具（CLI / IDE）的特性对比与选型指南</p>
 </div>
 
 <div class="container">
@@ -384,7 +386,7 @@
               <th>维度</th>
               <th>Claude Code</th>
               <th>OpenCode</th>
-              <th>GLM Plan</th>
+              <th>Gemini CLI</th>
               <th>Cursor</th>
             </tr>
           </thead>
@@ -400,42 +402,42 @@
               <td>开发商</td>
               <td>Anthropic</td>
               <td>开源社区</td>
-              <td>智谱 AI (Z.ai)</td>
+              <td>Google</td>
               <td>Anysphere</td>
             </tr>
             <tr>
               <td>开源</td>
               <td class="warn">源码可见 / 非 OSI 开源许可</td>
               <td class="highlight">MIT 开源</td>
-              <td class="warn">部分开源（生态组件）</td>
+              <td class="highlight">Apache 2.0 开源</td>
               <td class="dim">否 (闭源)</td>
             </tr>
             <tr>
               <td>GitHub Stars</td>
               <td class="highlight">66.2K</td>
               <td class="highlight">102.7K</td>
-              <td class="dim">&mdash;</td>
+              <td class="highlight">94K</td>
               <td class="dim">&mdash;</td>
             </tr>
             <tr>
               <td>模型绑定</td>
               <td class="warn">Claude 系列</td>
               <td class="highlight">75+ 提供商（含本地模型）</td>
-              <td class="warn">GLM 系列</td>
+              <td class="warn">Gemini 系列（1M token 上下文）</td>
               <td>多模型</td>
             </tr>
             <tr>
               <td>价格</td>
               <td>Pro $20 / Max $100-200</td>
               <td class="highlight">免费 (BYOK)</td>
-              <td class="highlight">按模型计费 + 免费额度</td>
+              <td class="highlight">免费（1000次/天）+ 付费 API</td>
               <td>$20/月起 + 用量计费</td>
             </tr>
             <tr>
               <td>定位</td>
               <td class="highlight">深度 Agentic 开发</td>
               <td>灵活开源替代</td>
-              <td>国产高性价比</td>
+              <td class="highlight">Google 生态 + 免费开源</td>
               <td>GUI 优先体验</td>
             </tr>
           </tbody>
@@ -466,7 +468,7 @@
               <th>核心概念</th>
               <th>Claude Code</th>
               <th>OpenCode</th>
-              <th>GLM Plan</th>
+              <th>Gemini CLI</th>
               <th>Cursor</th>
             </tr>
           </thead>
@@ -475,49 +477,49 @@
               <td>Context Engineering</td>
               <td class="highlight">CLAUDE.md + 层级记忆</td>
               <td class="highlight">AGENTS.md (完善)</td>
-              <td class="dim">有限支持</td>
+              <td class="highlight">GEMINI.md + /memory 记忆</td>
               <td>.cursor/rules</td>
             </tr>
             <tr>
               <td>Skills</td>
               <td class="highlight">原生 Skills 系统</td>
               <td class="highlight">原生 Skills 系统</td>
-              <td class="dim">不支持</td>
+              <td>Custom Commands + Extensions</td>
               <td>Skills / Subagents</td>
             </tr>
             <tr>
               <td>Agent / Subagent</td>
               <td class="highlight">原生子 Agent</td>
               <td class="highlight">原生 Agent</td>
-              <td class="dim">有限</td>
+              <td>实验性子 Agent（需手动启用）</td>
               <td>Background Agent</td>
             </tr>
             <tr>
               <td>MCP</td>
               <td class="highlight">协议创造者</td>
               <td class="highlight">完整支持</td>
-              <td>MCP Servers（生态建设中）</td>
+              <td class="highlight">完整支持 + Extensions 生态</td>
               <td class="highlight">完整支持</td>
             </tr>
             <tr>
               <td>Hooks</td>
               <td class="highlight">生命周期钩子</td>
               <td>支持</td>
-              <td class="dim">有限</td>
+              <td class="highlight">生命周期钩子（2026.01 新增）</td>
               <td class="dim">有限</td>
             </tr>
             <tr>
               <td>Permission Model</td>
               <td class="highlight">细粒度模式（default/plan 等）</td>
               <td>allow / ask / deny 规则化</td>
-              <td class="dim">基础</td>
+              <td>工具审批 + YOLO 模式</td>
               <td>项目级控制</td>
             </tr>
             <tr>
               <td>Commands</td>
               <td>/slash 命令</td>
               <td>/slash 命令</td>
-              <td>基础命令</td>
+              <td>/slash 命令 + 自定义命令</td>
               <td>命令面板</td>
             </tr>
           </tbody>
@@ -552,8 +554,8 @@
           <span>任意模型提供商，最大灵活性，可用 Claude / GPT / Gemini / 本地模型</span>
         </div>
         <div class="dim-item">
-          <span class="dim-label gp">GLM Plan</span>
-          <span>绑定 GLM 系列，国内访问友好</span>
+          <span class="dim-label gp">Gemini CLI</span>
+          <span>绑定 Gemini 系列，1M token 超长上下文，免费额度慷慨</span>
         </div>
         <div class="dim-item">
           <span class="dim-label cu">Cursor</span>
@@ -577,8 +579,8 @@
           <span>工具免费, 按模型 API 计费 (BYOK)</span>
         </div>
         <div class="dim-item">
-          <span class="dim-label gp">GLM Plan</span>
-          <span>按模型分档计费（输入/输出分开），以官方价目为准</span>
+          <span class="dim-label gp">Gemini CLI</span>
+          <span>免费层 60次/分 + 1000次/天；付费可通过 API Key 或 Vertex AI 按量计费</span>
         </div>
         <div class="dim-item">
           <span class="dim-label cu">Cursor</span>
@@ -602,8 +604,8 @@
           <span>规则化审批机制（allow / ask / deny），可按命令与路径细化</span>
         </div>
         <div class="dim-item">
-          <span class="dim-label gp">GLM Plan</span>
-          <span>基础权限控制</span>
+          <span class="dim-label gp">Gemini CLI</span>
+          <span>工具审批机制 + YOLO 模式一键放行，Hooks 可自定义安全策略</span>
         </div>
         <div class="dim-item">
           <span class="dim-label cu">Cursor</span>
@@ -635,11 +637,11 @@ flowchart TD
     Q["你的首要需求是什么?"]
     A["最强 AI 编程能力"]
     B["模型灵活性 / 开源"]
-    C["国内访问 / 性价比"]
+    C["免费 + Google 生态"]
     D["GUI 优先 / IDE 体验"]
     R1["Claude Code"]
     R2["OpenCode"]
-    R3["GLM Plan"]
+    R3["Gemini CLI"]
     R4["Cursor"]
 
     Q --> A
@@ -664,68 +666,11 @@ flowchart TD
     </div>
   </div>
 </div>
-
-<!-- ========== SECTION 05: 教学补充建议 ========== -->
-<div class="section">
-  <div class="section-head">
-    <span class="sn">05</span>
-    <span class="st">教学补充建议</span>
-  </div>
-  <p class="sd">为了让学习者“看完能上手、上手不翻车”，建议把对比课从静态参数扩展到实操与治理维度。</p>
-
-  <div class="card">
-    <div class="card-head">
-      <h3>建议增加的教学模块</h3>
-      <span class="card-badge">TEACHING UPGRADE</span>
-    </div>
-    <div class="card-body">
-      <div style="overflow-x:auto;">
-        <table class="compare-table">
-          <thead>
-            <tr>
-              <th>补充维度</th>
-              <th>为什么重要</th>
-              <th>课堂落地方式</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>同题 Benchmark</td>
-              <td>避免只看营销词，回到真实任务表现</td>
-              <td>统一任务：改接口 + 补测试 + 提 PR，对比成功率/耗时/人工介入</td>
-            </tr>
-            <tr>
-              <td>成本拆解</td>
-              <td>“价格”不等于“总成本”</td>
-              <td>拆成订阅费、Token费、失败重试、上下文长度与并发成本</td>
-            </tr>
-            <tr>
-              <td>权限与安全</td>
-              <td>决定是否能在团队/生产环境落地</td>
-              <td>演示 allow/ask/deny、危险命令拦截、敏感文件保护</td>
-            </tr>
-            <tr>
-              <td>生态可迁移性</td>
-              <td>降低未来迁移工具的重构成本</td>
-              <td>按 Rules / Skills / MCP / Hooks 设计“可移植提示资产”</td>
-            </tr>
-            <tr>
-              <td>失效数据治理</td>
-              <td>Stars/价格/模型能力更新很快</td>
-              <td>每页标注快照日期 + 官方链接，按月复核一次</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- ========== INSIGHT ========== -->
 <div class="section">
   <div class="insight">
     <h4>选型建议</h4>
-    <p>没有绝对最好的工具，只有最适合你的。建议先按你的真实任务（例如“改一个接口 + 补测试 + 提交 PR”）做同题试跑，再从成功率、耗时、人工介入次数与成本四个指标做选择：重度终端与深度 Agentic 可优先 <strong>Claude Code</strong>；追求模型灵活性和开源生态可优先 <strong>OpenCode</strong>；重视国内可达性与模型成本可尝试 <strong>GLM Plan</strong>；偏好 IDE 一体化与可视化流程可优先 <strong>Cursor</strong>。</p>
+    <p>没有绝对最好的工具，只有最适合你的。建议先按你的真实任务（例如"改一个接口 + 补测试 + 提交 PR"）做同题试跑，再从成功率、耗时、人工介入次数与成本四个指标做选择：重度终端与深度 Agentic 可优先 <strong>Claude Code</strong>；追求模型灵活性和开源生态可优先 <strong>OpenCode</strong>；看重免费额度、Google 生态与 1M 超长上下文可优先 <strong>Gemini CLI</strong>；偏好 IDE 一体化与可视化流程可优先 <strong>Cursor</strong>。</p>
   </div>
 </div>
 
